@@ -25,14 +25,14 @@
         "id": "fs",
         "aliases": ["ForgeScript", "fs"],
         "extensions": [".fs", ".fs.ts", ".fs.js"],
-        "configuration": "./src/language-configuration.json"
+        "configuration": "./src/config/language-configuration.json"
       }
     ],
     "grammars": [
       {
         "language": "fs",
         "scopeName": "source.fs",
-        "path": "./src/syntaxes/fs.tmLanguage.json",
+        "path": "./src/config/fs.tmLanguage.json",
         "injectTo": ["source.js"],
         "embeddedLanguages": {
           "meta.embedded.block.fs": "fs"
@@ -43,7 +43,7 @@
       {
         "id": "forge-icon-theme",
         "label": "ForgeScript Icons",
-        "path": "./src/icons/icon-theme.json"
+        "path": "./src/config/icon-theme.json"
       }
     ]
   },

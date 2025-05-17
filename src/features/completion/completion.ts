@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
-import { shouldProvideForJsTs } from './utils';
-import { completionItems, typeCompletionItems } from './fetchers';
+import { shouldProvideForJsTs } from '../../core/utils';
+import { completionItems, typeCompletionItems } from '../../core/fetchers';
 
 export function registerCompletionProviders(autoCompletionEnabledRef: () => boolean) {
   const fsProvider = vscode.languages.registerCompletionItemProvider(

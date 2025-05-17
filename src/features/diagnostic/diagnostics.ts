@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { functionsData } from './fetchers';
+import { functionsData } from '../../core/fetchers';
 
 export function registerDiagnostics(autoCompletionEnabledRef: () => boolean) {
   const diagnosticCollection = vscode.languages.createDiagnosticCollection('forgescript');

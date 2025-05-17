@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
-import { fetchFunctions, fetchEvents } from './fetchers';
-import { registerCompletionProviders } from './completion';
-import { registerDiagnostics } from './diagnostics';
+import { fetchFunctions, fetchEvents } from './core/fetchers';
+import { registerCompletionProviders } from './features/completion/completion';
+import { registerDiagnostics } from './features/diagnostic/diagnostics';
 
 let autoCompletionEnabled = true;
 
