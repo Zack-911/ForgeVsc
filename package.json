@@ -1,0 +1,49 @@
+{
+  "name": "forgescript-extension",
+  "icon": "./src/icons/forgescript.webp",
+  "displayName": "ForgeScript",
+  "description": "Provides autocomplete and syntax highlighting for ForgeScript.",
+  "version": "1.0.16",
+  "publisher": "Zack-911",
+  "license": "MIT",
+  "engines": {
+    "vscode": "^1.50.0"
+  },
+  "categories": ["Programming Languages"],
+  "activationEvents": ["onLanguage:fs", "onLanguage:js", "onLanguage:ts"],
+  "main": "./src/forgescript.js",
+  "contributes": {
+    "languages": [
+      {
+        "id": "fs",
+        "aliases": ["ForgeScript", "fs"],
+        "extensions": [".fs", ".fs.ts", ".fs.js"],
+        "configuration": "./src/language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "fs",
+        "scopeName": "source.fs",
+        "path": "./src/syntaxes/fs.tmLanguage.json",
+        "injectTo": ["source.js"],
+        "embeddedLanguages": {
+          "meta.embedded.block.fs": "fs"
+        }
+      }
+    ],
+    "iconThemes": [
+      {
+        "id": "forge-icon-theme",
+        "label": "ForgeScript Icons",
+        "path": "./src/icons/icon-theme.json"
+      }
+    ]
+  },
+  "dependencies": {
+    "undici": "^5.20.0"
+  },
+  "devDependencies": {
+    "vscode": "^1.1.37"
+  }
+}

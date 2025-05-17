@@ -1,0 +1,18 @@
+{
+  "iconDefinitions": {
+    "_fsjs": {
+      "iconPath": "./forgescript.webp"
+    },
+    "_fsts": {
+      "iconPath": "./forgescript.webp"
+    }
+  },
+  "fileExtensions": {
+    "fs.js": "_fsjs",
+    "fs.ts": "_fsts"
+  },
+  "fileNames": {},
+  "folderNames": {},
+  "folder": "_default",
+  "file": "_default"
+}

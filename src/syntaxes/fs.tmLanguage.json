@@ -1,0 +1,76 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "scopeName": "source.fs",
+  "name": "ForgeScript",
+  "fileTypes": ["fs"],
+  "patterns": [
+    {
+      "name": "source.fs.embedded",
+      "begin": "module\\.exports\\s*=\\s*\\{",
+      "beginCaptures": {
+        "0": { "name": "keyword.other.module.fs" }
+      },
+      "end": "\\}",
+      "endCaptures": {
+        "0": { "name": "keyword.other.module.fs" }
+      },
+      "contentName": "source.fs",
+      "patterns": [
+        { "include": "#everything_fs" }
+      ]
+    },
+    { "include": "#everything_fs" }
+  ],
+  "repository": {
+    "everything_fs": {
+      "patterns": [
+        {
+          "name": "comment.line.fs",
+          "match": "\\$c\\[.*?\\]"
+        },
+        {
+          "name": "keyword.control.fs",
+          "match": "\\$(if|elseif|else|while|for|return|end|break|continue)"
+        },
+        {
+          "name": "support.function.fs",
+          "match": "\\$[a-zA-Z0-9_]+"
+        },
+        {
+          "name": "variable.parameter.fs",
+          "match": "\\$[a-zA-Z0-9_]+(?=\\])"
+        },
+        {
+          "name": "constant.numeric.fs",
+          "match": "\\b\\d+(\\.\\d+)?\\b"
+        },
+        {
+          "name": "constant.language.boolean.fs",
+          "match": "\\b(true|false|null)\\b"
+        },
+        {
+          "name": "string.quoted.double.fs",
+          "begin": "\"",
+          "end": "\"",
+          "patterns": [
+            { "name": "constant.character.escape.fs", "match": "\\\\." }
+          ]
+        },
+        {
+          "name": "meta.brackets.fs",
+          "begin": "\\[",
+          "beginCaptures": {
+            "0": { "name": "punctuation.definition.brackets.begin.fs" }
+          },
+          "end": "\\]",
+          "endCaptures": {
+            "0": { "name": "punctuation.definition.brackets.end.fs" }
+          },
+          "patterns": [
+            { "include": "#everything_fs" }
+          ]
+        }
+      ]
+    }
+  }
+}
