@@ -1,17 +1,24 @@
 {
   "name": "forgescript-extension",
-  "icon": "./src/icons/forgescript.webp",
   "displayName": "ForgeScript",
   "description": "Provides autocomplete and syntax highlighting for ForgeScript.",
   "version": "1.0.16",
   "publisher": "Zack-911",
   "license": "MIT",
+  "icon": "src/icons/forgescript.webp",
+
   "engines": {
     "vscode": "^1.50.0"
   },
+
   "categories": ["Programming Languages"],
-  "activationEvents": ["onLanguage:fs", "onLanguage:js", "onLanguage:ts"],
-  "main": "./src/forgescript.js",
+
+  "activationEvents": [
+    "onLanguage:fs"
+  ],
+
+  "main": "dist/forgescript.js",
+
   "contributes": {
     "languages": [
       {
@@ -40,10 +47,19 @@
       }
     ]
   },
+
   "dependencies": {
     "undici": "^5.20.0"
   },
   "devDependencies": {
+    "@types/node": "^22.15.18",
+    "@types/vscode": "^1.100.0",
+    "typescript": "^5.8.3",
     "vscode": "^1.1.37"
+  },
+
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc -w"
   }
 }

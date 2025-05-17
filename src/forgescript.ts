@@ -1,9 +1,31 @@
-const vscode = require('vscode');
-const { fetch } = require('undici');
+import * as vscode from 'vscode';
+import { fetch } from 'undici';
 
-let functionsData = [];
-let completionItems = [];
-let typeCompletionItems = [];
+interface Arg {
+  name: string;
+  required?: boolean;
+  description?: string;
+}
+
+interface FunctionData {
+  name: string;
+  description: string;
+  version?: string;
+  brackets?: boolean;
+  args?: Arg[];
+  _source?: 'ForgeScript' | 'ForgeDB' | 'ForgeCanvas' | string;
+}
+
+interface EventData {
+  name: string;
+  description?: string;
+  version?: string;
+  _source?: 'ForgeScript' | 'ForgeDB' | string;
+}
+
+let functionsData: FunctionData[] = [];
+let completionItems: vscode.CompletionItem[] = [];
+let typeCompletionItems: vscode.CompletionItem[] = [];
 let autoCompletionEnabled = true;
 
 const EXTENSIONS = [
@@ -11,23 +33,24 @@ const EXTENSIONS = [
   'https://raw.githubusercontent.com/tryforge/Forgecanvas/refs/heads/dev/metadata/functions.json'
 ];
 
-function getSourceName(url) {
+function getSourceName(url: string): string {
   if (url.includes('Forgedb')) return 'ForgeDB';
   if (url.includes('Forgecanvas')) return 'ForgeCanvas';
   return 'ForgeScript';
 }
 
-async function fetchFunctions() {
+async function fetchFunctions(): Promise<void> {
   try {
     const urls = [
       'https://raw.githubusercontent.com/tryforge/ForgeScript/refs/heads/dev/metadata/functions.json',
       ...EXTENSIONS
     ];
 
-    const allFunctions = [];
+    const allFunctions: FunctionData[] = [];
+
     for (const url of urls) {
       const res = await fetch(url);
-      const json = await res.json();
+      const json = await res.json() as FunctionData[];
       const source = getSourceName(url);
       json.forEach(func => func._source = source);
       allFunctions.push(...json);
@@ -36,14 +59,12 @@ async function fetchFunctions() {
     functionsData = allFunctions;
 
     completionItems = allFunctions.map((func) => {
-      const item = new vscode.CompletionItem(func.name, {
-        label: func.name,
-        kind: {
-          'ForgeScript': vscode.CompletionItemKind.Function,
-          'ForgeDB': vscode.CompletionItemKind.Module,
-          'ForgeCanvas': vscode.CompletionItemKind.Interface
-        }[func._source] || vscode.CompletionItemKind.Function
-      });
+      const kindMap: Record<string, vscode.CompletionItemKind> = {
+        'ForgeScript': vscode.CompletionItemKind.Function,
+        'ForgeDB': vscode.CompletionItemKind.Module,
+        'ForgeCanvas': vscode.CompletionItemKind.Interface
+      };
+      const item = new vscode.CompletionItem(func.name, kindMap[func._source ?? ''] || vscode.CompletionItemKind.Function);
 
       const name = func.name.replace('$', '');
       let snippet = name;
@@ -60,9 +81,7 @@ async function fetchFunctions() {
         }
       } else if (func.brackets === false) {
         if (func.args && func.args.length > 0) {
-          const params = func.args.map((arg, i) => {
-            return `\${${i + 1}:${arg.name}?}`;
-          }).join(';');
+          const params = func.args.map((arg, i) => `\${${i + 1}:${arg.name}?}`).join(';');
           snippet += `[\${1:${params}}]`;
         } else {
           snippet += `[\${1:}]`;
@@ -72,39 +91,42 @@ async function fetchFunctions() {
       }
 
       item.insertText = new vscode.SnippetString(snippet);
-      item.detail = `${func.description}`;
+      item.detail = func.description;
 
-      const argsList = func.args?.map(arg => `- \`${arg.name}\`${arg.required ? '' : ' _(optional)_'}: ${arg.description || ''}`).join('\n') || 'None';
+      const argsList = func.args?.map(arg =>
+        `- \`${arg.name}\`${arg.required ? '' : ' _(optional)_'}: ${arg.description || ''}`
+      ).join('\n') || 'None';
 
-      item.documentation = new vscode.MarkdownString(
-        `### ${func.name}\n\n` +
-        `${func.description}\n\n` +
+      const docString = `### ${func.name}\n\n${func.description}\n\n` +
         `**Package:** \`${func._source}\`\n` +
-        `**Version:** \`${func.version || 'unknown'}\`\n` +
+        `**Version:** \`${func.version ?? 'unknown'}\`\n` +
         `**Brackets:** \`${func.brackets === undefined ? 'none' : func.brackets ? 'required' : 'optional'}\`\n\n` +
-        `**Arguments:**\n${argsList}`
-      );
+        `**Arguments:**\n${argsList}`;
 
-      item.documentation.isTrusted = true;
+      const markdown = new vscode.MarkdownString(docString);
+      markdown.isTrusted = true;
+      item.documentation = markdown;
 
       return item;
     });
+
   } catch (error) {
     console.error('Error fetching functions:', error);
   }
 }
 
-async function fetchEvents() {
+async function fetchEvents(): Promise<void> {
   try {
     const urls = [
       'https://raw.githubusercontent.com/tryforge/ForgeScript/refs/heads/dev/metadata/events.json',
       'https://raw.githubusercontent.com/tryforge/Forgedb/refs/heads/dev/metadata/events.json'
     ];
 
-    const allEvents = [];
+    const allEvents: EventData[] = [];
+
     for (const url of urls) {
       const res = await fetch(url);
-      const json = await res.json();
+      const json = await res.json() as EventData[];
       const source = getSourceName(url);
       json.forEach(evt => evt._source = source);
       allEvents.push(...json);
@@ -114,26 +136,28 @@ async function fetchEvents() {
       const item = new vscode.CompletionItem(evt.name, vscode.CompletionItemKind.Event);
       item.detail = evt.description;
       item.insertText = `"${evt.name}"`;
+
       item.documentation = new vscode.MarkdownString(
-        `### ${evt.name}\n\n` +
-        `${evt.description || ''}\n\n` +
+        `### ${evt.name}\n\n${evt.description ?? ''}\n\n` +
         `**Package:** \`${evt._source}\`\n` +
-        `**Version:** \`${evt.version || 'unknown'}\``
+        `**Version:** \`${evt.version ?? 'unknown'}\``
       );
+
       return item;
     });
+
   } catch (error) {
     console.error('Error fetching events:', error);
   }
 }
 
-function isInTemplateString(document, position) {
+function isInTemplateString(document: vscode.TextDocument, position: vscode.Position): boolean {
   const text = document.getText(new vscode.Range(new vscode.Position(0, 0), position));
   const backticks = (text.match(/`/g) || []).length;
   return backticks % 2 === 1;
 }
 
-function shouldProvideForJsTs(document, position) {
+function shouldProvideForJsTs(document: vscode.TextDocument, position: vscode.Position): boolean {
   const fileName = document.fileName;
   if (fileName.endsWith('.fs.js') || fileName.endsWith('.fs.ts')) return true;
   if ((fileName.endsWith('.js') || fileName.endsWith('.ts')) && position) {
@@ -142,15 +166,15 @@ function shouldProvideForJsTs(document, position) {
   return false;
 }
 
-function activate(context) {
+export function activate(context: vscode.ExtensionContext): void {
   fetchFunctions();
   fetchEvents();
 
   const fsProvider = vscode.languages.registerCompletionItemProvider(
     ['fs', 'javascript', 'typescript'],
     {
-      provideCompletionItems(document, position) {
-        if (!autoCompletionEnabled) return;
+      provideCompletionItems(document: vscode.TextDocument, position: vscode.Position) {
+        if (!autoCompletionEnabled) return undefined;
         if (document.languageId === 'fs' || shouldProvideForJsTs(document, position)) {
           const linePrefix = document.lineAt(position).text.substr(0, position.character);
           const wordMatch = linePrefix.match(/\$[a-zA-Z0-9_]*$/);
@@ -166,8 +190,8 @@ function activate(context) {
   const typeProvider = vscode.languages.registerCompletionItemProvider(
     ['javascript', 'typescript', 'fs'],
     {
-      provideCompletionItems(document, position) {
-        if (!autoCompletionEnabled) return;
+      provideCompletionItems(document: vscode.TextDocument, position: vscode.Position) {
+        if (!autoCompletionEnabled) return undefined;
         if (document.languageId === 'fs' || shouldProvideForJsTs(document, position)) {
           const line = document.lineAt(position).text;
           const prefix = line.substring(0, position.character);
@@ -190,15 +214,16 @@ function activate(context) {
 
     if (!(document.languageId === 'fs' || document.fileName.endsWith('.fs.js') || document.fileName.endsWith('.fs.ts'))) return;
 
-    const diagnostics = [];
+    const diagnostics: vscode.Diagnostic[] = [];
 
     functionsData.forEach(func => {
       if (!func.args || func.args.length === 0 || !func.brackets) return;
+
       const requiredArgs = func.args.filter(arg => arg.required);
       const totalArgs = func.args.length;
 
       const regex = new RegExp(`\\${func.name}\\[([^\\]]*)\\]`, 'g');
-      let match;
+      let match: RegExpExecArray | null;
       while ((match = regex.exec(text)) !== null) {
         const provided = match[1].split(';').filter(Boolean);
         const start = document.positionAt(match.index);
@@ -236,9 +261,4 @@ function activate(context) {
   context.subscriptions.push(fsProvider, typeProvider, enableCmd, disableCmd, diagnosticCheck, diagnosticCollection);
 }
 
-function deactivate() {}
-
-module.exports = {
-  activate,
-  deactivate
-};
+export function deactivate(): void {}
