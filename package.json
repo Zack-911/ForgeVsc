@@ -2,7 +2,7 @@
   "name": "forgescript-extension",
   "displayName": "ForgeScript",
   "description": "Provides autocomplete and syntax highlighting for ForgeScript.",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "publisher": "Zack-911",
   "license": "MIT",
   "icon": "src/icons/forgescript.webp",
@@ -30,10 +30,6 @@
       {
         "command": "forgescript.refreshMetadata",
         "title": "ForgeScript: Update Autocomplete"
-      },
-      {
-        "command": "forgescript.configureLanguageDetection",
-        "title": "ForgeScript: Configure Language Detection"
       }
     ],
     "languages": [
@@ -71,13 +67,6 @@
         "label": "ForgeScript",
         "uiTheme": "vs-dark",
         "path": "./src/config/FSColorThemeDarkFlat.json"
-      }
-    ],
-    "iconThemes": [
-      {
-        "id": "forge-icon-theme",
-        "label": "ForgeScript Icons",
-        "path": "./src/config/icon-themes.json"
       }
     ]
   },

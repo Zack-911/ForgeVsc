@@ -26,7 +26,8 @@
       "patterns": [
         {
           "name": "comment.line.fs",
-          "match": "\\$c\\[.*?\\]",
+          "match": "\\($c\\[.*?\\]|//.*?)",
+          
           "patterns": [
             {
               "name": "constant.character.escape.comment.fs",
