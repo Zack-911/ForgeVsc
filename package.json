@@ -2,29 +2,52 @@
   "name": "forgescript-extension",
   "displayName": "ForgeScript",
   "description": "Provides autocomplete and syntax highlighting for ForgeScript.",
-  "version": "1.0.16",
+  "version": "1.2.1",
   "publisher": "Zack-911",
   "license": "MIT",
   "icon": "src/icons/forgescript.webp",
-
+  "repository": "https://github.com/zack-911/forgevsc",
   "engines": {
     "vscode": "^1.50.0"
   },
-
-  "categories": ["Programming Languages"],
-
+  "categories": [
+    "Programming Languages"
+  ],
   "activationEvents": [
     "onLanguage:fs"
   ],
-
   "main": "dist/forgescript.js",
-
   "contributes": {
+    "commands": [
+      {
+        "command": "forgescript.enableAutocomplete",
+        "title": "ForgeScript: Enable Autocomplete"
+      },
+      {
+        "command": "forgescript.disableAutocomplete",
+        "title": "ForgeScript: Disable Autocomplete"
+      },
+      {
+        "command": "forgescript.refreshMetadata",
+        "title": "ForgeScript: Update Autocomplete"
+      },
+      {
+        "command": "forgescript.configureLanguageDetection",
+        "title": "ForgeScript: Configure Language Detection"
+      }
+    ],
     "languages": [
       {
         "id": "fs",
-        "aliases": ["ForgeScript", "fs"],
-        "extensions": [".fs", ".fs.ts", ".fs.js"],
+        "aliases": [
+          "ForgeScript",
+          "fs"
+        ],
+        "extensions": [
+          ".fs",
+          ".fs.ts",
+          ".fs.js"
+        ],
         "configuration": "./src/config/language-configuration.json"
       }
     ],
@@ -32,34 +55,44 @@
       {
         "language": "fs",
         "scopeName": "source.fs",
-        "path": "./src/config/fs.tmLanguage.json",
-        "injectTo": ["source.js"],
-        "embeddedLanguages": {
-          "meta.embedded.block.fs": "fs"
-        }
+        "path": "./src/config/fs.tmLanguage.json"
+      },
+      {
+        "scopeName": "forgescript.inject.code",
+        "path": "./src/config/injection.tmLanguage.json",
+        "injectTo": [
+          "source.js",
+          "source.ts"
+        ]
+      }
+    ],
+    "themes": [
+      {
+        "label": "ForgeScript",
+        "uiTheme": "vs-dark",
+        "path": "./src/config/FSColorThemeDarkFlat.json"
       }
     ],
     "iconThemes": [
       {
         "id": "forge-icon-theme",
         "label": "ForgeScript Icons",
-        "path": "./src/config/icon-theme.json"
+        "path": "./src/config/icon-themes.json"
       }
     ]
   },
-
   "dependencies": {
+    "ts-morph": "^25.0.1",
     "undici": "^5.20.0"
   },
   "devDependencies": {
     "@types/node": "^22.15.18",
-    "@types/vscode": "^1.100.0",
+    "@types/vscode": "^1.50.0",
     "typescript": "^5.8.3",
     "vscode": "^1.1.37"
   },
-
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && vsce package",
     "dev": "tsc -w"
   }
 }

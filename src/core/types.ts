@@ -2,6 +2,7 @@ export interface Arg {
   name: string;
   required?: boolean;
   description?: string;
+  rest: boolean;
 }
 
 export interface FunctionData {

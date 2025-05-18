@@ -30,6 +30,8 @@ The extension activates automatically for any files ending in:
 
 - `.fs.js`
 - `.fs.ts`
+- `.js` (Must Have Fs Inside Of It To Switch)
+- `.ts` (Must Have Fs Inside Of It To Switch)
 
 Just open or create a file with one of these extensions and start coding — no setup required!
 
@@ -38,13 +40,13 @@ Just open or create a file with one of these extensions and start coding — no 
 ## 📥 Installation
 
 Search for `Forgescript` in the VS Code Marketplace and click **Install**, or use this link:
-**[→ Install from Marketplace](https://marketplace.visualstudio.com/items?itemName=Zack-911.forgescript-extension)** (update with your link)
+**[→ Install from Marketplace](https://marketplace.visualstudio.com/items?itemName=Zack-911.forgescript-extension)**
 
 ---
 
 ## 🛠️ Contributing
 
-Got a bug or want to suggest a feature? Reach out to me on the official forgescript discord server.
+Got a bug or want to suggest a feature? Reach out to me on the official forgescript discord server Or contribute **[Here](https://github.com/zack-911/forgevsc)**
 
 ---
 

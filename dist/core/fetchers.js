@@ -36,37 +36,59 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.typeCompletionItems = exports.completionItems = exports.functionsData = void 0;
 exports.fetchFunctions = fetchFunctions;
 exports.fetchEvents = fetchEvents;
-const undici_1 = require("undici");
+exports.forceRefetchFunctions = forceRefetchFunctions;
 const vscode = __importStar(require("vscode"));
+const fetchWithCache_1 = require("./fetchWithCache");
 const utils_1 = require("./utils");
 exports.functionsData = [];
 exports.completionItems = [];
 exports.typeCompletionItems = [];
-const EXTENSIONS = [
+const FUNCTION_URLS = [
+    'https://raw.githubusercontent.com/tryforge/ForgeScript/refs/heads/dev/metadata/functions.json',
     'https://raw.githubusercontent.com/tryforge/Forgedb/refs/heads/dev/metadata/functions.json',
     'https://raw.githubusercontent.com/tryforge/Forgecanvas/refs/heads/dev/metadata/functions.json'
 ];
-async function fetchFunctions() {
-    const urls = [
-        'https://raw.githubusercontent.com/tryforge/ForgeScript/refs/heads/dev/metadata/functions.json',
-        ...EXTENSIONS
-    ];
+const EVENT_URLS = [
+    'https://raw.githubusercontent.com/tryforge/ForgeScript/refs/heads/dev/metadata/events.json',
+    'https://raw.githubusercontent.com/tryforge/Forgedb/refs/heads/dev/metadata/events.json'
+];
+const kindMap = {
+    'ForgeScript': vscode.CompletionItemKind.Function,
+    'ForgeDB': vscode.CompletionItemKind.Module,
+    'ForgeCanvas': vscode.CompletionItemKind.Interface
+};
+function isFunctionArray(data) {
+    return Array.isArray(data) && data.every(fn => typeof fn.name === 'string');
+}
+function isEventArray(data) {
+    return Array.isArray(data) && data.every(evt => typeof evt.name === 'string');
+}
+function normalizeSourceName(source) {
+    const s = source.toLowerCase();
+    if (s.includes('forgescript'))
+        return 'ForgeScript';
+    if (s.includes('forgedb'))
+        return 'ForgeDB';
+    if (s.includes('forgecanvas'))
+        return 'ForgeCanvas';
+    return 'ForgeScript'; // fallback default
+}
+async function fetchFunctions(force = false) {
     const allFunctions = [];
-    for (const url of urls) {
-        const res = await (0, undici_1.fetch)(url);
-        const json = await res.json();
-        const source = (0, utils_1.getSourceName)(url);
+    const fetches = FUNCTION_URLS.map(async (url) => {
+        const name = url.split('/').slice(-3).join('_');
+        const json = await (0, fetchWithCache_1.fetchWithCache)(url, `functions_${name}.json`, force);
+        if (!isFunctionArray(json))
+            return;
+        const rawSource = (0, utils_1.getSourceName)(url);
+        const source = normalizeSourceName(rawSource);
         json.forEach(func => func._source = source);
         allFunctions.push(...json);
-    }
+    });
+    await Promise.all(fetches);
     exports.functionsData = allFunctions;
     exports.completionItems = allFunctions.map((func) => {
-        const kindMap = {
-            'ForgeScript': vscode.CompletionItemKind.Function,
-            'ForgeDB': vscode.CompletionItemKind.Module,
-            'ForgeCanvas': vscode.CompletionItemKind.Interface
-        };
-        const item = new vscode.CompletionItem(func.name, kindMap[func._source ?? ''] || vscode.CompletionItemKind.Function);
+        const item = new vscode.CompletionItem(func.name, kindMap[func._source ?? 'ForgeScript']);
         const name = func.name.replace('$', '');
         let snippet = name;
         if (func.brackets === true) {
@@ -76,32 +98,42 @@ async function fetchFunctions() {
             snippet += `[\${1:${(func.args || []).map((arg, i) => `\${${i + 1}:${arg.name}?}`).join(';')}}]`;
         }
         item.insertText = new vscode.SnippetString(snippet);
-        item.detail = func.description;
         const argsList = func.args?.map(arg => `- \`${arg.name}\`${arg.required ? '' : ' _(optional)_'}: ${arg.description || ''}`).join('\n') || 'None';
-        const doc = new vscode.MarkdownString(`### ${func.name}\n\n${func.description}\n\n**Package:** \`${func._source}\`\n**Version:** \`${func.version ?? 'unknown'}\`\n**Brackets:** \`${func.brackets === undefined ? 'none' : func.brackets ? 'required' : 'optional'}\`\n\n**Arguments:**\n${argsList}`);
+        const doc = new vscode.MarkdownString(`### ${func.name}\n\n${func.description}\n\n` +
+            `**Package:** \`${func._source}\`\n` +
+            `**Version:** \`${func.version ?? 'unknown'}\`\n` +
+            `**Brackets:** \`${func.brackets === undefined ? 'none' : func.brackets ? 'required' : 'optional'}\`\n\n` +
+            `**Arguments:**\n${argsList}`);
         doc.isTrusted = true;
         item.documentation = doc;
         return item;
     });
 }
-async function fetchEvents() {
-    const urls = [
-        'https://raw.githubusercontent.com/tryforge/ForgeScript/refs/heads/dev/metadata/events.json',
-        'https://raw.githubusercontent.com/tryforge/Forgedb/refs/heads/dev/metadata/events.json'
-    ];
+async function fetchEvents(force = false) {
     const allEvents = [];
-    for (const url of urls) {
-        const res = await (0, undici_1.fetch)(url);
-        const json = await res.json();
-        const source = (0, utils_1.getSourceName)(url);
+    const fetches = EVENT_URLS.map(async (url) => {
+        const name = url.split('/').slice(-3).join('_');
+        const json = await (0, fetchWithCache_1.fetchWithCache)(url, `events_${name}.json`, force);
+        if (!isEventArray(json))
+            return;
+        const rawSource = (0, utils_1.getSourceName)(url);
+        const source = normalizeSourceName(rawSource);
         json.forEach(evt => evt._source = source);
         allEvents.push(...json);
-    }
+    });
+    await Promise.all(fetches);
     exports.typeCompletionItems = allEvents.map(evt => {
         const item = new vscode.CompletionItem(evt.name, vscode.CompletionItemKind.Event);
-        item.detail = evt.description;
         item.insertText = `"${evt.name}"`;
-        item.documentation = new vscode.MarkdownString(`### ${evt.name}\n\n${evt.description ?? ''}\n\n**Package:** \`${evt._source}\`\n**Version:** \`${evt.version ?? 'unknown'}\``);
+        const doc = new vscode.MarkdownString(`### ${evt.name}\n\n${evt.description ?? ''}\n\n` +
+            `**Package:** \`${evt._source}\`\n` +
+            `**Version:** \`${evt.version ?? 'unknown'}\``);
+        doc.isTrusted = true;
+        item.documentation = doc;
         return item;
     });
+}
+async function forceRefetchFunctions() {
+    await fetchFunctions(true);
+    await fetchEvents(true);
 }

@@ -1,18 +1,32 @@
 import * as vscode from 'vscode';
-import { fetchFunctions, fetchEvents } from './core/fetchers';
+import { fetchFunctions, fetchEvents, forceRefetchFunctions } from './core/fetchers';
+import { initCache, lastFetchTime, updateFetchTime } from './core/fetchWithCache';
 import { registerCompletionProviders } from './features/completion/completion';
-import { registerDiagnostics } from './features/diagnostic/diagnostics';
+import { activateLanguageSwitcher } from './features/theming/languageSwitcher';
 
 let autoCompletionEnabled = true;
 
 export async function activate(context: vscode.ExtensionContext) {
-  await fetchFunctions();
-  await fetchEvents();
+  initCache(context);
+
+  const now = Date.now();
+  const oneDay = 1000 * 60 * 60 * 24;
+  const lastFetch = lastFetchTime();
+
+  const shouldRefetch = !lastFetch || now - lastFetch > oneDay;
+
+  if (shouldRefetch) {
+    await fetchFunctions();
+    await fetchEvents();
+    updateFetchTime();
+  } else {
+    await fetchFunctions(false);
+    await fetchEvents(false);
+  }
 
   const getStatus = () => autoCompletionEnabled;
 
   const [fsProvider, typeProvider] = registerCompletionProviders(getStatus);
-  const [diagnosticCheck, diagnosticCollection] = registerDiagnostics(getStatus);
 
   const enableCmd = vscode.commands.registerCommand('forgescript.enableAutocomplete', () => {
     autoCompletionEnabled = true;
@@ -24,7 +38,23 @@ export async function activate(context: vscode.ExtensionContext) {
     vscode.window.showInformationMessage('ForgeScript Autocomplete disabled');
   });
 
-  context.subscriptions.push(fsProvider, typeProvider, enableCmd, disableCmd, diagnosticCheck, diagnosticCollection);
+  const refreshCmd = vscode.commands.registerCommand('forgescript.refreshMetadata', async () => {
+    vscode.window.showInformationMessage('Refreshing ForgeScript metadata...');
+    await forceRefetchFunctions();
+    updateFetchTime();
+    vscode.window.showInformationMessage('ForgeScript metadata refreshed!');
+  });
+
+  context.subscriptions.push(
+    fsProvider,
+    typeProvider,
+    enableCmd,
+    disableCmd,
+    refreshCmd
+  );
+
+  // Activate the language switcher feature:
+  activateLanguageSwitcher(context);
 }
 
 export function deactivate() {}

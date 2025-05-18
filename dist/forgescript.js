@@ -37,15 +37,27 @@ exports.activate = activate;
 exports.deactivate = deactivate;
 const vscode = __importStar(require("vscode"));
 const fetchers_1 = require("./core/fetchers");
+const fetchWithCache_1 = require("./core/fetchWithCache");
 const completion_1 = require("./features/completion/completion");
-const diagnostics_1 = require("./features/diagnostic/diagnostics");
+const languageSwitcher_1 = require("./features/theming/languageSwitcher");
 let autoCompletionEnabled = true;
 async function activate(context) {
-    await (0, fetchers_1.fetchFunctions)();
-    await (0, fetchers_1.fetchEvents)();
+    (0, fetchWithCache_1.initCache)(context);
+    const now = Date.now();
+    const oneDay = 1000 * 60 * 60 * 24;
+    const lastFetch = (0, fetchWithCache_1.lastFetchTime)();
+    const shouldRefetch = !lastFetch || now - lastFetch > oneDay;
+    if (shouldRefetch) {
+        await (0, fetchers_1.fetchFunctions)();
+        await (0, fetchers_1.fetchEvents)();
+        (0, fetchWithCache_1.updateFetchTime)();
+    }
+    else {
+        await (0, fetchers_1.fetchFunctions)(false);
+        await (0, fetchers_1.fetchEvents)(false);
+    }
     const getStatus = () => autoCompletionEnabled;
     const [fsProvider, typeProvider] = (0, completion_1.registerCompletionProviders)(getStatus);
-    const [diagnosticCheck, diagnosticCollection] = (0, diagnostics_1.registerDiagnostics)(getStatus);
     const enableCmd = vscode.commands.registerCommand('forgescript.enableAutocomplete', () => {
         autoCompletionEnabled = true;
         vscode.window.showInformationMessage('ForgeScript Autocomplete enabled');
@@ -54,6 +66,14 @@ async function activate(context) {
         autoCompletionEnabled = false;
         vscode.window.showInformationMessage('ForgeScript Autocomplete disabled');
     });
-    context.subscriptions.push(fsProvider, typeProvider, enableCmd, disableCmd, diagnosticCheck, diagnosticCollection);
+    const refreshCmd = vscode.commands.registerCommand('forgescript.refreshMetadata', async () => {
+        vscode.window.showInformationMessage('Refreshing ForgeScript metadata...');
+        await (0, fetchers_1.forceRefetchFunctions)();
+        (0, fetchWithCache_1.updateFetchTime)();
+        vscode.window.showInformationMessage('ForgeScript metadata refreshed!');
+    });
+    context.subscriptions.push(fsProvider, typeProvider, enableCmd, disableCmd, refreshCmd);
+    // Activate the language switcher feature:
+    (0, languageSwitcher_1.activateLanguageSwitcher)(context);
 }
 function deactivate() { }

@@ -33,28 +33,33 @@ var __importStar = (this && this.__importStar) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getSourceName = getSourceName;
-exports.isInTemplateString = isInTemplateString;
-exports.shouldProvideForJsTs = shouldProvideForJsTs;
+exports.getConfig = getConfig;
+exports.updateConfig = updateConfig;
+exports.isDisabled = isDisabled;
 const vscode = __importStar(require("vscode"));
-function getSourceName(url) {
-    if (url.includes('Forgedb'))
-        return 'ForgeDB';
-    if (url.includes('Forgecanvas'))
-        return 'ForgeCanvas';
-    return 'ForgeScript';
+const CONFIG_KEY = 'forgescript.languageSwitcher';
+function getConfig() {
+    return vscode.workspace.getConfiguration().get(CONFIG_KEY) || {
+        disabledProjects: [],
+        disabledFiles: [],
+        disabledPaths: [],
+        disableAll: false,
+        enableCommentDetection: true,
+        enableObjectDetection: true,
+        enableKeyDetection: true,
+    };
 }
-function isInTemplateString(document, position) {
-    const text = document.getText(new vscode.Range(new vscode.Position(0, 0), position));
-    const backticks = (text.match(/`/g) || []).length;
-    return backticks % 2 === 1;
+function updateConfig(newValues) {
+    const config = getConfig();
+    const updated = { ...config, ...newValues };
+    return vscode.workspace.getConfiguration().update(CONFIG_KEY, updated, vscode.ConfigurationTarget.Global);
 }
-function shouldProvideForJsTs(document, position) {
-    const fileName = document.fileName;
-    if (fileName.endsWith('.fs.js') || fileName.endsWith('.fs.ts'))
-        return true;
-    if ((fileName.endsWith('.js') || fileName.endsWith('.ts')) && position) {
-        return isInTemplateString(document, position);
-    }
-    return false;
+function isDisabled(doc) {
+    const cfg = getConfig();
+    const filePath = doc.uri.fsPath;
+    const projectPath = vscode.workspace.getWorkspaceFolder(doc.uri)?.uri.fsPath;
+    return cfg.disableAll ||
+        cfg.disabledFiles.includes(filePath) ||
+        (projectPath && cfg.disabledProjects.includes(projectPath)) ||
+        cfg.disabledPaths.some(p => filePath.startsWith(p));
 }

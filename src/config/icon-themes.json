@@ -1,10 +1,10 @@
 {
   "iconDefinitions": {
     "_fsjs": {
-      "iconPath": "./forgescript.webp"
+      "iconPath": "../icons/forgescript.webp"
     },
     "_fsts": {
-      "iconPath": "./forgescript.webp"
+      "iconPath": "../icons/forgescript.webp"
     }
   },
   "fileExtensions": {
