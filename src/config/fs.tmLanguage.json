@@ -4,21 +4,6 @@
   "name": "ForgeScript",
   "fileTypes": ["fs"],
   "patterns": [
-    {
-      "name": "source.fs.embedded",
-      "begin": "module\\.exports\\s*=\\s*\\{",
-      "beginCaptures": {
-        "0": { "name": "keyword.other.module.fs" }
-      },
-      "end": "\\}",
-      "endCaptures": {
-        "0": { "name": "keyword.other.module.fs" }
-      },
-      "contentName": "source.fs",
-      "patterns": [
-        { "include": "#everything_fs" }
-      ]
-    },
     { "include": "#everything_fs" }
   ],
   "repository": {
@@ -26,8 +11,7 @@
       "patterns": [
         {
           "name": "comment.line.fs",
-          "match": "\\($c\\[.*?\\]|//.*?)",
-          
+          "match": "\\$c\\[.*?\\]",
           "patterns": [
             {
               "name": "constant.character.escape.comment.fs",
@@ -37,68 +21,19 @@
         },
         {
           "name": "keyword.control.fs",
-          "match": "(?i)\\$(onlyif|if|elseif|else|while|for|return|end|break|continue)"
-        },
-        {
-          "name": "function.guild.fs",
-          "match": "(?i)\\$[a-zA-Z_]*guild[a-zA-Z0-9_]*"
-        },
-        {
-          "name": "function.user.fs",
-          "match": "(?i)\\$[a-zA-Z_]*user[a-zA-Z0-9_]*"
-        },
-        {
-          "name": "function.bot.fs",
-          "match": "(?i)\\$[a-zA-Z_]*bot[a-zA-Z0-9_]*"
+          "match": "(?i:\\$(onlyif|if|elseif|else|while|for|return|end|break|continue))"
         },
         {
           "name": "function.fs",
-          "match": "(?i)\\$[a-zA-Z_][a-zA-Z0-9_]*"
+          "match": "(?i:\\$[a-z_][a-z0-9_]*)"
         },
         {
-          "name": "variable.parameter.fs",
-          "match": "\\$[a-zA-Z_][a-zA-Z0-9_]*(?=\\])"
+          "name": "keyword.operator.fs",
+          "match": "(==|=>|<=|!=)"
         },
         {
-          "name": "variable.other.bracket.fs",
-          "match": "(?<=\\[)[a-zA-Z_][a-zA-Z0-9_]*(?=\\])"
-        },
-        {
-          "name": "constant.numeric.fs",
-          "match": "\\b\\d+(\\.\\d+)?\\b"
-        },
-        {
-          "name": "constant.language.boolean.fs",
-          "match": "\\b(true|false|null)\\b"
-        },
-        {
-          "name": "string.quoted.double.fs",
-          "begin": "\"",
-          "end": "\"",
-          "patterns": [
-            {
-              "name": "constant.character.escape.fs",
-              "match": "\\\\[nrt\"'\\\\]"
-            }
-          ]
-        },
-        {
-          "name": "string.unquoted.fs",
-          "match": "\\b[a-zA-Z_][a-zA-Z0-9_]*\\b"
-        },
-        {
-          "name": "meta.brackets.fs",
-          "begin": "\\[",
-          "beginCaptures": {
-            "0": { "name": "punctuation.definition.brackets.begin.fs" }
-          },
-          "end": "\\]",
-          "endCaptures": {
-            "0": { "name": "punctuation.definition.brackets.end.fs" }
-          },
-          "patterns": [
-            { "include": "#everything_fs" }
-          ]
+          "name": "punctuation.terminator.fs",
+          "match": ";"
         }
       ]
     }

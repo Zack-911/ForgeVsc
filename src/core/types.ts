@@ -7,6 +7,7 @@ export interface Arg {
 
 export interface FunctionData {
   name: string;
+  category: string;
   description: string;
   version?: string;
   brackets?: boolean;

@@ -38,7 +38,7 @@ const vscode = __importStar(require("vscode"));
 const utils_1 = require("../../core/utils");
 const fetchers_1 = require("../../core/fetchers");
 function registerCompletionProviders(autoCompletionEnabledRef) {
-    const fsProvider = vscode.languages.registerCompletionItemProvider(['fs', 'javascript', 'typescript'], {
+    const fsProvider = vscode.languages.registerCompletionItemProvider(['fs'], {
         provideCompletionItems(document, position) {
             if (!autoCompletionEnabledRef())
                 return;
@@ -50,7 +50,7 @@ function registerCompletionProviders(autoCompletionEnabledRef) {
             }
         }
     }, '$');
-    const typeProvider = vscode.languages.registerCompletionItemProvider(['fs', 'javascript', 'typescript'], {
+    const typeProvider = vscode.languages.registerCompletionItemProvider(['fs'], {
         provideCompletionItems(document, position) {
             if (!autoCompletionEnabledRef())
                 return;

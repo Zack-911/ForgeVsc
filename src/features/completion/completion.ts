@@ -4,7 +4,7 @@ import { completionItems, typeCompletionItems } from '../../core/fetchers';
 
 export function registerCompletionProviders(autoCompletionEnabledRef: () => boolean) {
   const fsProvider = vscode.languages.registerCompletionItemProvider(
-    ['fs', 'javascript', 'typescript'],
+    ['fs'],
     {
       provideCompletionItems(document, position) {
         if (!autoCompletionEnabledRef()) return;
@@ -19,7 +19,7 @@ export function registerCompletionProviders(autoCompletionEnabledRef: () => bool
   );
 
   const typeProvider = vscode.languages.registerCompletionItemProvider(
-    ['fs', 'javascript', 'typescript'],
+    ['fs'],
     {
       provideCompletionItems(document, position) {
         if (!autoCompletionEnabledRef()) return;

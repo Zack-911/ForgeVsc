@@ -2,7 +2,7 @@
   "name": "forgescript-extension",
   "displayName": "ForgeScript",
   "description": "Provides autocomplete and syntax highlighting for ForgeScript.",
-  "version": "1.2.2",
+  "version": "1.2.7",
   "publisher": "Zack-911",
   "license": "MIT",
   "icon": "src/icons/forgescript.webp",
@@ -14,7 +14,9 @@
     "Programming Languages"
   ],
   "activationEvents": [
-    "onLanguage:fs"
+    "onLanguage:fs",
+    "onLanguage:javascript",
+    "onLanguage:typescript"
   ],
   "main": "dist/forgescript.js",
   "contributes": {
@@ -29,7 +31,7 @@
       },
       {
         "command": "forgescript.refreshMetadata",
-        "title": "ForgeScript: Update Autocomplete"
+        "title": "ForgeScript: Refresh Cache"
       }
     ],
     "languages": [
@@ -38,13 +40,7 @@
         "aliases": [
           "ForgeScript",
           "fs"
-        ],
-        "extensions": [
-          ".fs",
-          ".fs.ts",
-          ".fs.js"
-        ],
-        "configuration": "./src/config/language-configuration.json"
+        ]
       }
     ],
     "grammars": [
@@ -54,12 +50,12 @@
         "path": "./src/config/fs.tmLanguage.json"
       },
       {
-        "scopeName": "forgescript.inject.code",
-        "path": "./src/config/injection.tmLanguage.json",
-        "injectTo": [
-          "source.js",
-          "source.ts"
-        ]
+        "scopeName": "source.fs.injection",
+        "path": "./src/config/injection.json",
+        "injectTo": ["source.js", "source.ts"],
+        "embeddedLanguages": {
+          "meta.embedded.forgescript": "fs"
+        }
       }
     ],
     "themes": [

@@ -1,0 +1,16 @@
+{
+  "scopeName": "source.fs.injection",
+  "injectionSelector": "L:source.js -string -comment",
+  "patterns": [
+    {
+      "begin": "(?<=\\bcode\\s*:\\s*)`",
+      "end": "`",
+      "contentName": "meta.embedded.forgescript",
+      "patterns": [
+        {
+          "include": "source.fs"
+        }
+      ]
+    }
+  ]
+}
