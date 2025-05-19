@@ -41,20 +41,24 @@
           "ForgeScript",
           "fs"
         ]
+      },
+      {
+      "id": "fs",
+      "aliases": ["ForgeScript"],
+      "extensions": [".fs"],
+      "configuration": "./src/config/language-configuration.json"
       }
     ],
     "grammars": [
-      {
-        "language": "fs",
-        "scopeName": "source.fs",
-        "path": "./src/config/fs.tmLanguage.json"
-      },
       {
         "scopeName": "source.fs.injection",
         "path": "./src/config/injection.json",
         "injectTo": ["source.js", "source.ts"],
         "embeddedLanguages": {
           "meta.embedded.forgescript": "fs"
+        },
+        "tokenTypes": {
+          "meta.embedded.forgescript": "other"
         }
       }
     ],

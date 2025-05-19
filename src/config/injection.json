@@ -1,4 +1,5 @@
 {
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
   "scopeName": "source.fs.injection",
   "injectionSelector": "L:source.js -string -comment, L:source.ts -string -comment",
   "patterns": [
@@ -7,10 +8,78 @@
       "end": "`",
       "contentName": "meta.embedded.forgescript",
       "patterns": [
+        { "include": "#everything_fs" }
+      ]
+    }
+  ],
+  "repository": {
+    "everything_fs": {
+      "patterns": [
         {
-          "include": "source.fs"
+          "name": "comment.line.fs",
+          "match": "\\$c\\[.*?\\]",
+          "patterns": [
+            {
+              "name": "constant.character.escape.comment.fs",
+              "match": "\\\\[nrt\\\\\"']"
+            }
+          ]
+        },
+        {
+          "name": "keyword.control.fs",
+          "match": "(?i:\\$(onlyif|if|elseif|else|while|for|return|end|break|continue))"
+        },
+        {
+          "name": "function.fs",
+          "match": "(?i:\\$[a-z_][a-z0-9_]*)"
+        },
+        {
+          "name": "meta.brackets.fs",
+          "begin": "\\[",
+          "beginCaptures": {
+            "0": { "name": "punctuation.definition.brackets.begin.fs" }
+          },
+          "end": "\\]",
+          "endCaptures": {
+            "0": { "name": "punctuation.definition.brackets.end.fs" }
+          },
+          "patterns": [
+            { "include": "#everything_fs" }
+          ]
+        },
+        {
+          "name": "keyword.operator.fs",
+          "match": "(?i:(==|=>|<=|!=))"
+        },
+        {
+          "name": "constant.numeric.fs",
+          "match": "(?i:\\b\\d+(?:\\.\\d+)?\\b)"
+        },
+        {
+          "name": "constant.language.boolean.true.fs",
+          "match": "(?i:\\btrue\\b)"
+        },
+        {
+          "name": "constant.language.boolean.false.fs",
+          "match": "(?i:\\bfalse\\b)"
+        },
+        {
+          "name": "markup.heading.fs",
+          "match": "(?i:^(#{1,6})\\s.*$)"
+        },
+        {
+          "name": "markup.list.bullet.fs",
+          "match": "(?i:^\\-\\s.*$)"
+        },
+        {
+          "name": "markup.bold.fs",
+          "match": "(?i:(\\*\\*|__)(?=\\S)(.*?\\S)\\1)"
+        },
+        {
+          "name": "markup.italic.fs",
+          "match": "(?i:(\\*|_)(?=\\S)(.*?\\S)\\1)"
         }
       ]
     }
-  ]
+  }
 }
