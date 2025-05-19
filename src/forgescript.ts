@@ -2,7 +2,6 @@ import * as vscode from 'vscode';
 import { fetchFunctions, fetchEvents, forceRefetchFunctions } from './core/fetchers';
 import { initCache, lastFetchTime, updateFetchTime } from './core/fetchWithCache';
 import { registerCompletionProviders } from './features/completion/completion';
-import { activateLanguageSwitcher } from './features/theming/languageSwitcher';
 
 let autoCompletionEnabled = true;
 
@@ -52,9 +51,6 @@ export async function activate(context: vscode.ExtensionContext) {
     disableCmd,
     refreshCmd
   );
-
-  // Activate the language switcher feature:
-  activateLanguageSwitcher(context);
 }
 
 export function deactivate() {}

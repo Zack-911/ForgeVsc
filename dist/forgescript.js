@@ -39,7 +39,6 @@ const vscode = __importStar(require("vscode"));
 const fetchers_1 = require("./core/fetchers");
 const fetchWithCache_1 = require("./core/fetchWithCache");
 const completion_1 = require("./features/completion/completion");
-const languageSwitcher_1 = require("./features/theming/languageSwitcher");
 let autoCompletionEnabled = true;
 async function activate(context) {
     (0, fetchWithCache_1.initCache)(context);
@@ -73,7 +72,5 @@ async function activate(context) {
         vscode.window.showInformationMessage('ForgeScript metadata refreshed!');
     });
     context.subscriptions.push(fsProvider, typeProvider, enableCmd, disableCmd, refreshCmd);
-    // Activate the language switcher feature:
-    (0, languageSwitcher_1.activateLanguageSwitcher)(context);
 }
 function deactivate() { }

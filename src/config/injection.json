@@ -1,6 +1,6 @@
 {
   "scopeName": "source.fs.injection",
-  "injectionSelector": "L:source.js -string -comment",
+  "injectionSelector": "L:source.js -string -comment, L:source.ts -string -comment",
   "patterns": [
     {
       "begin": "(?<=\\bcode\\s*:\\s*)`",
