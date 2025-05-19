@@ -1,10 +1,10 @@
 import * as vscode from 'vscode';
 import { shouldProvideForJsTs } from '../../core/utils';
 import { completionItems, typeCompletionItems } from '../../core/fetchers';
-
+console.log("Autocompleteee")
 export function registerCompletionProviders(autoCompletionEnabledRef: () => boolean) {
   const fsProvider = vscode.languages.registerCompletionItemProvider(
-    ['fs'],
+    ['javascript', 'typescript'],
     {
       provideCompletionItems(document, position) {
         if (!autoCompletionEnabledRef()) return;
@@ -17,9 +17,9 @@ export function registerCompletionProviders(autoCompletionEnabledRef: () => bool
     },
     '$'
   );
-
+  console.log("Autocompletee")
   const typeProvider = vscode.languages.registerCompletionItemProvider(
-    ['fs'],
+    ['javascript', 'typescript'],
     {
       provideCompletionItems(document, position) {
         if (!autoCompletionEnabledRef()) return;
@@ -33,6 +33,8 @@ export function registerCompletionProviders(autoCompletionEnabledRef: () => bool
     },
     '"', "'"
   );
+
+  console.log("Autocomplete")
 
   return [fsProvider, typeProvider];
 }

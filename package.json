@@ -2,7 +2,7 @@
   "name": "forgescript-extension",
   "displayName": "ForgeScript",
   "description": "Provides autocomplete and syntax highlighting for ForgeScript.",
-  "version": "1.2.7",
+  "version": "1.3.1",
   "publisher": "Zack-911",
   "license": "MIT",
   "icon": "src/icons/forgescript.webp",
@@ -14,7 +14,6 @@
     "Programming Languages"
   ],
   "activationEvents": [
-    "onLanguage:fs",
     "onLanguage:javascript",
     "onLanguage:typescript"
   ],
@@ -38,22 +37,22 @@
       {
         "id": "fs",
         "aliases": [
-          "ForgeScript",
-          "fs"
-        ]
-      },
-      {
-      "id": "fs",
-      "aliases": ["ForgeScript"],
-      "extensions": [".fs"],
-      "configuration": "./src/config/language-configuration.json"
+          "ForgeScript"
+        ],
+        "extensions": [
+          ".fs"
+        ],
+        "configuration": "./src/config/language-configuration.json"
       }
     ],
     "grammars": [
       {
         "scopeName": "source.fs.injection",
         "path": "./src/config/injection.json",
-        "injectTo": ["source.js", "source.ts"],
+        "injectTo": [
+          "source.js",
+          "source.ts"
+        ],
         "embeddedLanguages": {
           "meta.embedded.forgescript": "fs"
         },

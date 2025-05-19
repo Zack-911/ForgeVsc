@@ -44,6 +44,18 @@ export async function activate(context: vscode.ExtensionContext) {
     vscode.window.showInformationMessage('ForgeScript metadata refreshed!');
   });
 
+  const rainbowExt = vscode.extensions.getExtension('oderwat.indent-rainbow');
+  if (!rainbowExt) {
+    vscode.window.showInformationMessage(
+      'ForgeScript extension reallyyyy recommends installing the "Rainbow Indent Lines" extension for the best experience. Wanna install it now?',
+      'Yes', 'No'
+    ).then(selection => {
+      if (selection === 'Yes') {
+        vscode.commands.executeCommand('workbench.extensions.installExtension', 'oderwat.indent-rainbow');
+      }
+    });
+  }
+
   context.subscriptions.push(
     fsProvider,
     typeProvider,
