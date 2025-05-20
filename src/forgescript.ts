@@ -1,7 +1,6 @@
 import * as vscode from 'vscode';
 import { fetchFunctions, fetchEvents, forceRefetchFunctions } from './core/fetchers';
 import { initCache, lastFetchTime, updateFetchTime } from './core/fetchWithCache';
-import { registerCompletionProviders } from './features/completion/completion';
 
 let autoCompletionEnabled = true;
 
@@ -24,8 +23,6 @@ export async function activate(context: vscode.ExtensionContext) {
   }
 
   const getStatus = () => autoCompletionEnabled;
-
-  const [fsProvider, typeProvider] = registerCompletionProviders(getStatus);
 
   const enableCmd = vscode.commands.registerCommand('forgescript.enableAutocomplete', () => {
     autoCompletionEnabled = true;
@@ -57,8 +54,6 @@ export async function activate(context: vscode.ExtensionContext) {
   }
 
   context.subscriptions.push(
-    fsProvider,
-    typeProvider,
     enableCmd,
     disableCmd,
     refreshCmd
