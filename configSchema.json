@@ -1,0 +1,93 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Extension Config Schema",
+  "type": "object",
+  "properties": {
+    "syntax": {
+      "type": "object",
+      "description": "Settings for syntax highlighting",
+      "properties": {
+        "colors": {
+          "type": "array",
+          "description": "An array of hex color codes",
+          "items": {
+            "type": "string",
+            "pattern": "^#(?:[0-9a-fA-F]{3}){1,2}$"
+          }
+        },
+        "operators": {
+          "type": "array",
+          "description": "An array of supported operators like !, #, @[]",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": ["colors", "operators"]
+    },
+    "urls": {
+      "type": "object",
+      "description": "Named list of urls functions.json",
+      "patternProperties": {
+        "^[a-zA-Z0-9-_]+$": {
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9_.-]+\\/[a-zA-Z0-9_.-]+#[a-zA-Z0-9_.-]+$",
+          "description": "Format must be 'user/repo#branch-or-commit'"
+        }
+      },
+      "properties": {
+        "forgescript": {
+          "type": "string",
+          "enum": [
+            "tryforge/forgescript#dev"
+          ]
+        },
+        "forgedb": {
+          "type": "string",
+          "enum": [
+            "tryforge/forgedb#dev"
+          ]
+        },
+        "forgecanvas": {
+          "type": "string",
+          "enum": [
+            "tryforge/forgecanvas#dev"
+          ]
+        },
+        "forgeexpress": {
+          "type": "string",
+          "enum": [
+            "zack-911/forgeexpress#dev"
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "minProperties": 1
+    },
+    "customFunctions": {
+      "type": "object",
+      "description": "Specify your custom functions",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "pattern": "^[^$]+$",
+            "description": "Function name must NOT contain the $ sign"
+          },
+          "params": {
+            "type": "array",
+            "description": "Optional array of parameters"
+          },
+          "category": {
+            "type": "string",
+            "description": "Function category"
+          }
+        },
+        "required": ["name", "category"],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": ["syntax", "urls"]
+}

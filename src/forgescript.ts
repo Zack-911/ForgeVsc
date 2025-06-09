@@ -1,63 +1,55 @@
-import * as vscode from 'vscode';
-import { fetchFunctions, fetchEvents, forceRefetchFunctions } from './core/fetchers';
-import { initCache, lastFetchTime, updateFetchTime } from './core/fetchWithCache';
+import * as vscode from 'vscode'
 
-let autoCompletionEnabled = true;
+import { initForgeConfig } from './features/config/init'
+import { registerSyntaxHighlightWatcher } from './features/theming/updateThemeWatcher'
+import { getAutocompleteItems } from './features/autocompletion/autocomplete'
+import { registerHoverProvider } from './features/hover/hover'
+import { updateSyntaxHighlightingMC } from './features/theming/updateThemeMC'
 
 export async function activate(context: vscode.ExtensionContext) {
-  initCache(context);
-
-  const now = Date.now();
-  const oneDay = 1000 * 60 * 60 * 24;
-  const lastFetch = lastFetchTime();
-
-  const shouldRefetch = !lastFetch || now - lastFetch > oneDay;
-
-  if (shouldRefetch) {
-    await fetchFunctions();
-    await fetchEvents();
-    updateFetchTime();
-  } else {
-    await fetchFunctions(false);
-    await fetchEvents(false);
-  }
-
-  const getStatus = () => autoCompletionEnabled;
-
-  const enableCmd = vscode.commands.registerCommand('forgescript.enableAutocomplete', () => {
-    autoCompletionEnabled = true;
-    vscode.window.showInformationMessage('ForgeScript Autocomplete enabled');
-  });
-
-  const disableCmd = vscode.commands.registerCommand('forgescript.disableAutocomplete', () => {
-    autoCompletionEnabled = false;
-    vscode.window.showInformationMessage('ForgeScript Autocomplete disabled');
-  });
-
-  const refreshCmd = vscode.commands.registerCommand('forgescript.refreshMetadata', async () => {
-    vscode.window.showInformationMessage('Refreshing ForgeScript metadata...');
-    await forceRefetchFunctions();
-    updateFetchTime();
-    vscode.window.showInformationMessage('ForgeScript metadata refreshed!');
-  });
-
-  const rainbowExt = vscode.extensions.getExtension('oderwat.indent-rainbow');
-  if (!rainbowExt) {
-    vscode.window.showInformationMessage(
-      'ForgeScript extension reallyyyy recommends installing the "Rainbow Indent Lines" extension for the best experience. Wanna install it now?',
-      'Yes', 'No'
-    ).then(selection => {
-      if (selection === 'Yes') {
-        vscode.commands.executeCommand('workbench.extensions.installExtension', 'oderwat.indent-rainbow');
-      }
-    });
-  }
+  context.subscriptions.push(
+    vscode.commands.registerCommand('forge-vsc.initConfig', initForgeConfig)
+  )
 
   context.subscriptions.push(
-    enableCmd,
-    disableCmd,
-    refreshCmd
-  );
+    vscode.commands.registerCommand('forge-vsc.reloadSyntaxHighlighting', async () => {
+      updateSyntaxHighlightingMC()
+      const choice = await vscode.window.showInformationMessage(
+        'Syntax highlighting updated. Reload window for full effect?',
+        'Reload Now'
+      )
+      if (choice === 'Reload Now') {
+        vscode.commands.executeCommand('workbench.action.reloadWindow')
+      }
+    })
+  )
+
+  registerSyntaxHighlightWatcher(context)
+  registerHoverProvider(context)
+  const autocompleteProvider = vscode.languages.registerCompletionItemProvider(
+    [ 
+      { language: 'javascript' },
+      { language: 'typescript' }
+    ],
+    {
+      async provideCompletionItems(document, position) {
+        const line = document.lineAt(position).text.substring(0, position.character)
+        const match = line.match(/\$(\w*)$/)
+        if (!match) return undefined
+
+        const partial = match[1] || ""
+        const items = await getAutocompleteItems()
+        return items.filter(item => item.label.startsWith(`$${partial}`))
+      }
+    },
+    '$'
+  )
+
+  context.subscriptions.push(autocompleteProvider)
+
+  console.log('🎉 Forge VSC Extension is now active!')
 }
 
-export function deactivate() {}
+export function deactivate() {
+  console.log('👋 Forge VSC Extension has been deactivated.')
+}

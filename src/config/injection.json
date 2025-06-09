@@ -4,11 +4,16 @@
   "injectionSelector": "L:source.js -string -comment, L:source.ts -string -comment",
   "patterns": [
     {
-      "begin": "(?<=\\bcode\\s*:\\s*)`",
+      "begin": "(?<=\\b(code|handler)\\s*:\\s*)`",
       "end": "`",
       "contentName": "meta.embedded.forgescript",
       "patterns": [
-        { "include": "#everything_fs" }
+        {
+          "include": "#everything_fs"
+        },
+        {
+          "include": "#functions.fs"
+        }
       ]
     }
   ],
@@ -26,25 +31,31 @@
           ]
         },
         {
-          "name": "keyword.control.fs",
-          "match": "(?i:\\$(onlyif|if|elseif|else|while|for|return|end|break|continue))"
-        },
-        {
-          "name": "function.fs",
-          "match": "(?i:\\$[a-z_][a-z0-9_]*)"
+          "name": "constant.other.discord-tag.fs",
+          "match": "<[@#!]?[a-zA-Z0-9:_]+>"
         },
         {
           "name": "meta.brackets.fs",
           "begin": "\\[",
           "beginCaptures": {
-            "0": { "name": "punctuation.definition.brackets.begin.fs" }
+            "0": {
+              "name": "punctuation.definition.brackets.begin.fs"
+            }
           },
           "end": "\\]",
           "endCaptures": {
-            "0": { "name": "punctuation.definition.brackets.end.fs" }
+            "0": {
+              "name": "punctuation.definition.brackets.end.fs"
+            }
           },
           "patterns": [
-            { "include": "#everything_fs" }
+            {
+              "name": "punctuation.separator.fs",
+              "match": ";"
+            },
+            {
+              "include": "#everything_fs"
+            }
           ]
         },
         {
@@ -73,11 +84,26 @@
         },
         {
           "name": "markup.bold.fs",
-          "match": "(?i:(\\*\\*|__)(?=\\S)(.*?\\S)\\1)"
+          "begin": "(\\*\\*|__)(?=\\S)",
+          "beginCaptures": {
+            "1": {
+              "name": "punctuation.definition.bold.begin.fs"
+            }
+          },
+          "end": "\\1",
+          "endCaptures": {
+            "1": {
+              "name": "punctuation.definition.bold.end.fs"
+            }
+          },
+          "patterns": [
+            {
+              "include": "#everything_fs"
+            }
+          ]
         },
         {
-          "name": "markup.italic.fs",
-          "match": "(?i:(\\*|_)(?=\\S)(.*?\\S)\\1)"
+          "include": "#functions"
         }
       ]
     }

@@ -33,28 +33,33 @@ var __importStar = (this && this.__importStar) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getSourceName = getSourceName;
-exports.isInTemplateString = isInTemplateString;
-exports.shouldProvideForJsTs = shouldProvideForJsTs;
+exports.initForgeConfig = initForgeConfig;
 const vscode = __importStar(require("vscode"));
-function getSourceName(url) {
-    if (url.includes('Forgedb'))
-        return 'ForgeDB';
-    if (url.includes('Forgecanvas'))
-        return 'ForgeCanvas';
-    return 'ForgeScript';
-}
-function isInTemplateString(document, position) {
-    const text = document.getText(new vscode.Range(new vscode.Position(0, 0), position));
-    const backticks = (text.match(/`/g) || []).length;
-    return backticks % 2 === 1;
-}
-function shouldProvideForJsTs(document, position) {
-    const fileName = document.fileName;
-    if (fileName.endsWith('.fs.js') || fileName.endsWith('.fs.ts'))
-        return true;
-    if ((fileName.endsWith('.js') || fileName.endsWith('.ts')) && position) {
-        return isInTemplateString(document, position);
+const fs = __importStar(require("fs"));
+const path = __importStar(require("path"));
+function initForgeConfig() {
+    const workspaceFolders = vscode.workspace.workspaceFolders;
+    if (!workspaceFolders || workspaceFolders.length === 0) {
+        vscode.window.showErrorMessage("❌ No workspace folder found.");
+        return;
     }
-    return false;
+    const workspacePath = workspaceFolders[0].uri.fsPath;
+    const vscodeDir = path.join(workspacePath, '.vscode');
+    const configPath = path.join(vscodeDir, 'forgevsc.config.json');
+    const templatePath = path.join(__dirname, '..', '..', 'config', 'forgevsc.config.json');
+    try {
+        if (!fs.existsSync(templatePath)) {
+            vscode.window.showErrorMessage(`❌ Template config not found at ${templatePath}`);
+            return;
+        }
+        if (!fs.existsSync(vscodeDir)) {
+            fs.mkdirSync(vscodeDir);
+            vscode.window.showInformationMessage('📁 Created `.vscode` directory');
+        }
+        fs.copyFileSync(templatePath, configPath);
+        vscode.window.showInformationMessage('✅ forgevsc.config.json copied to .vscode folder');
+    }
+    catch (err) {
+        vscode.window.showErrorMessage(`❌ Failed to initialize config: ${err.message}`);
+    }
 }

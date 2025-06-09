@@ -1,0 +1,10 @@
+{
+  "syntax": {
+    "type": 1,
+    "colors": [
+      "#a87ffb", "#b895fd", "#92A9FF", "#85CDF1", "#708fff","#77D5A3", 
+      "#66ce98", "#FFD395", "#f7768e", "#fc8f8e", "#ffa23e","#ffc26e",
+      "#BD9CFE", "#c8aaff", "#9AC1F6", "#5A8CFF"
+    ]
+  }
+}

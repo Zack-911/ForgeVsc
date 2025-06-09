@@ -33,42 +33,36 @@ var __importStar = (this && this.__importStar) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.activate = activate;
-exports.deactivate = deactivate;
+exports.registerSyntaxHighlightWatcher = registerSyntaxHighlightWatcher;
 const vscode = __importStar(require("vscode"));
-const init_1 = require("./features/config/init");
-const updateThemeWatcher_1 = require("./features/theming/updateThemeWatcher");
-const autocomplete_1 = require("./features/autocompletion/autocomplete");
-const hover_1 = require("./features/hover/hover");
-const updateThemeMC_1 = require("./features/theming/updateThemeMC");
-async function activate(context) {
-    context.subscriptions.push(vscode.commands.registerCommand('forge-vsc.initConfig', init_1.initForgeConfig));
-    context.subscriptions.push(vscode.commands.registerCommand('forge-vsc.reloadSyntaxHighlighting', async () => {
-        (0, updateThemeMC_1.updateSyntaxHighlightingMC)();
+const fs = __importStar(require("fs"));
+const path = __importStar(require("path"));
+const updateThemeMC_1 = require("./updateThemeMC");
+function hasForgeConfig(workspacePath) {
+    return fs.existsSync(path.join(workspacePath, '.vscode', 'forgevsc.config.json'));
+}
+function registerSyntaxHighlightWatcher(context) {
+    const workspaceFolders = vscode.workspace.workspaceFolders;
+    if (!workspaceFolders?.length)
+        return;
+    const workspacePath = workspaceFolders[0].uri.fsPath;
+    if (!hasForgeConfig(workspacePath)) {
+        vscode.window.showErrorMessage('❌ Missing .vscode/forgevsc.config.json. Use the init command to generate it.');
+        return;
+    }
+    const watcher = vscode.workspace.createFileSystemWatcher('**/.vscode/forgevsc.config.json');
+    const onConfigChange = async () => {
+        await (0, updateThemeMC_1.updateSyntaxHighlightingMC)();
         const choice = await vscode.window.showInformationMessage('Syntax highlighting updated. Reload window for full effect?', 'Reload Now');
         if (choice === 'Reload Now') {
             vscode.commands.executeCommand('workbench.action.reloadWindow');
         }
+    };
+    watcher.onDidCreate(onConfigChange);
+    watcher.onDidChange(onConfigChange);
+    context.subscriptions.push(watcher);
+    context.subscriptions.push(vscode.commands.registerCommand('forgevsc.reloadSyntax', async () => {
+        await (0, updateThemeMC_1.updateSyntaxHighlightingMC)();
+        vscode.window.showInformationMessage('Syntax highlighting manually reloaded. Reload window for full effect.');
     }));
-    (0, updateThemeWatcher_1.registerSyntaxHighlightWatcher)(context);
-    (0, hover_1.registerHoverProvider)(context);
-    const autocompleteProvider = vscode.languages.registerCompletionItemProvider([
-        { language: 'javascript' },
-        { language: 'typescript' }
-    ], {
-        async provideCompletionItems(document, position) {
-            const line = document.lineAt(position).text.substring(0, position.character);
-            const match = line.match(/\$(\w*)$/);
-            if (!match)
-                return undefined;
-            const partial = match[1] || "";
-            const items = await (0, autocomplete_1.getAutocompleteItems)();
-            return items.filter(item => item.label.startsWith(`$${partial}`));
-        }
-    }, '$');
-    context.subscriptions.push(autocompleteProvider);
-    console.log('🎉 Forge VSC Extension is now active!');
-}
-function deactivate() {
-    console.log('👋 Forge VSC Extension has been deactivated.');
 }
