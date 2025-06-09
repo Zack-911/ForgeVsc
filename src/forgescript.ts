@@ -4,6 +4,7 @@ import { initForgeConfig } from './features/config/init'
 import { registerSyntaxHighlightWatcher } from './features/theming/updateThemeWatcher'
 import { getAutocompleteItems } from './features/autocompletion/autocomplete'
 import { registerHoverProvider } from './features/hover/hover'
+import { registerSignatureHelpProvider } from './features/hover/signature'
 import { updateSyntaxHighlightingMC } from './features/theming/updateThemeMC'
 
 export async function activate(context: vscode.ExtensionContext) {
@@ -26,6 +27,8 @@ export async function activate(context: vscode.ExtensionContext) {
 
   registerSyntaxHighlightWatcher(context)
   registerHoverProvider(context)
+  registerSignatureHelpProvider(context)
+
   const autocompleteProvider = vscode.languages.registerCompletionItemProvider(
     [ 
       { language: 'javascript' },

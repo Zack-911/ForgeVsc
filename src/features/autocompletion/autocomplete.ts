@@ -11,19 +11,6 @@ export async function getAutocompleteItems(): Promise<vscode.CompletionItem[]> {
     const name = fn.name.startsWith("$") ? fn.name : `$${fn.name}`
     let insertText = name
 
-    if (Array.isArray(fn.args) && fn.args.length > 0) {
-      const insertArgs = fn.args.map((arg) => {
-        const base = arg.name || "arg"
-        const isOptional = !arg.required
-        const isRest = arg.rest === true
-        if (isRest && isOptional) return `...${base}?`
-        if (isRest) return `...${base}`
-        if (isOptional) return `${base}?`
-        return base
-      })
-      insertText += `[${insertArgs.join(";")}]`
-    }
-
     const doc = new vscode.MarkdownString(undefined)
     doc.appendMarkdown(`${fn.description || "*No description*"}\n\n`)
 

@@ -76,3 +76,4 @@ function registerHoverProvider(context) {
     });
     context.subscriptions.push(provider);
 }
+console.log();

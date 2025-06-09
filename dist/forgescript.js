@@ -40,6 +40,7 @@ const init_1 = require("./features/config/init");
 const updateThemeWatcher_1 = require("./features/theming/updateThemeWatcher");
 const autocomplete_1 = require("./features/autocompletion/autocomplete");
 const hover_1 = require("./features/hover/hover");
+const signature_1 = require("./features/hover/signature");
 const updateThemeMC_1 = require("./features/theming/updateThemeMC");
 async function activate(context) {
     context.subscriptions.push(vscode.commands.registerCommand('forge-vsc.initConfig', init_1.initForgeConfig));
@@ -52,6 +53,7 @@ async function activate(context) {
     }));
     (0, updateThemeWatcher_1.registerSyntaxHighlightWatcher)(context);
     (0, hover_1.registerHoverProvider)(context);
+    (0, signature_1.registerSignatureHelpProvider)(context);
     const autocompleteProvider = vscode.languages.registerCompletionItemProvider([
         { language: 'javascript' },
         { language: 'typescript' }

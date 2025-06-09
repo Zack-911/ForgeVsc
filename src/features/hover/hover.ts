@@ -47,3 +47,5 @@ export function registerHoverProvider(context: vscode.ExtensionContext) {
 
   context.subscriptions.push(provider)
 }
+
+console.log()
