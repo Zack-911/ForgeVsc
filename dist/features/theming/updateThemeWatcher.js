@@ -37,7 +37,7 @@ exports.registerSyntaxHighlightWatcher = registerSyntaxHighlightWatcher;
 const vscode = __importStar(require("vscode"));
 const fs = __importStar(require("fs"));
 const path = __importStar(require("path"));
-const updateThemeMC_1 = require("./updateThemeMC");
+const updateTheme_1 = require("./updateTheme");
 function hasForgeConfig(workspacePath) {
     return fs.existsSync(path.join(workspacePath, '.vscode', 'forgevsc.config.json'));
 }
@@ -52,7 +52,7 @@ function registerSyntaxHighlightWatcher(context) {
     }
     const watcher = vscode.workspace.createFileSystemWatcher('**/.vscode/forgevsc.config.json');
     const onConfigChange = async () => {
-        await (0, updateThemeMC_1.updateSyntaxHighlightingMC)();
+        await (0, updateTheme_1.updateSyntaxHighlighting)();
         const choice = await vscode.window.showInformationMessage('Syntax highlighting updated. Reload window for full effect?', 'Reload Now');
         if (choice === 'Reload Now') {
             vscode.commands.executeCommand('workbench.action.reloadWindow');
@@ -62,7 +62,7 @@ function registerSyntaxHighlightWatcher(context) {
     watcher.onDidChange(onConfigChange);
     context.subscriptions.push(watcher);
     context.subscriptions.push(vscode.commands.registerCommand('forgevsc.reloadSyntax', async () => {
-        await (0, updateThemeMC_1.updateSyntaxHighlightingMC)();
+        await (0, updateTheme_1.updateSyntaxHighlighting)();
         vscode.window.showInformationMessage('Syntax highlighting manually reloaded. Reload window for full effect.');
     }));
 }

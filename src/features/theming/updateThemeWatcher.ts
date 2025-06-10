@@ -2,7 +2,7 @@ import * as vscode from 'vscode'
 import * as fs from 'fs'
 import * as path from 'path'
 
-import { updateSyntaxHighlightingMC } from './updateThemeMC'
+import { updateSyntaxHighlighting } from './updateTheme'
 
 function hasForgeConfig(workspacePath: string): boolean {
   return fs.existsSync(path.join(workspacePath, '.vscode', 'forgevsc.config.json'))
@@ -22,7 +22,7 @@ export function registerSyntaxHighlightWatcher(context: vscode.ExtensionContext)
   const watcher = vscode.workspace.createFileSystemWatcher('**/.vscode/forgevsc.config.json')
 
   const onConfigChange = async () => {
-    await updateSyntaxHighlightingMC()
+    await updateSyntaxHighlighting()
     const choice = await vscode.window.showInformationMessage(
       'Syntax highlighting updated. Reload window for full effect?',
       'Reload Now'
@@ -39,7 +39,7 @@ export function registerSyntaxHighlightWatcher(context: vscode.ExtensionContext)
 
   context.subscriptions.push(
     vscode.commands.registerCommand('forgevsc.reloadSyntax', async () => {
-      await updateSyntaxHighlightingMC()
+      await updateSyntaxHighlighting()
       vscode.window.showInformationMessage('Syntax highlighting manually reloaded. Reload window for full effect.')
     })
   )

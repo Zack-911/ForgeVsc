@@ -5,7 +5,8 @@ import { registerSyntaxHighlightWatcher } from './features/theming/updateThemeWa
 import { getAutocompleteItems } from './features/autocompletion/autocomplete'
 import { registerHoverProvider } from './features/hover/hover'
 import { registerSignatureHelpProvider } from './features/hover/signature'
-import { updateSyntaxHighlightingMC } from './features/theming/updateThemeMC'
+import { updateSyntaxHighlighting } from './features/theming/updateTheme'
+import { runTypeDiagnostics } from './features/diagnostics/typeChecker'
 
 export async function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(
@@ -14,7 +15,7 @@ export async function activate(context: vscode.ExtensionContext) {
 
   context.subscriptions.push(
     vscode.commands.registerCommand('forge-vsc.reloadSyntaxHighlighting', async () => {
-      updateSyntaxHighlightingMC()
+      updateSyntaxHighlighting()
       const choice = await vscode.window.showInformationMessage(
         'Syntax highlighting updated. Reload window for full effect?',
         'Reload Now'
@@ -49,6 +50,21 @@ export async function activate(context: vscode.ExtensionContext) {
   )
 
   context.subscriptions.push(autocompleteProvider)
+
+  const diagnostics = vscode.languages.createDiagnosticCollection("forgescript")
+  context.subscriptions.push(diagnostics)
+
+  const triggerDiagnostics = (doc: vscode.TextDocument) => {
+    if (doc.languageId === "javascript" || doc.languageId === "typescript") {
+      runTypeDiagnostics(doc, diagnostics)
+    }
+  }
+
+  vscode.workspace.textDocuments.forEach(triggerDiagnostics)
+  context.subscriptions.push(
+    vscode.workspace.onDidChangeTextDocument(e => triggerDiagnostics(e.document)),
+    vscode.workspace.onDidOpenTextDocument(triggerDiagnostics)
+  )
 
   console.log('🎉 Forge VSC Extension is now active!')
 }

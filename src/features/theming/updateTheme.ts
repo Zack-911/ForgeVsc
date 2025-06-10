@@ -19,7 +19,7 @@ const themePaths = [
   path.join(__dirname, '..', '..', 'config', 'FSColorThemeDarkColorBlind.json')
 ]
 
-export async function updateSyntaxHighlightingMC() {
+export async function updateSyntaxHighlighting() {
   const COLORS = getConfig("syntax.colors")
   const OPERATORS: string[] = getConfig("syntax.operators") || []
 
@@ -65,7 +65,7 @@ export async function updateSyntaxHighlightingMC() {
     const base = fn.startsWith("$") ? fn.slice(1) : fn
     const escaped = escapeForRegex(base)
     return {
-      match: `(?<!\\\\)\\$${opsPattern}${escaped}`,
+      match: `(?<!\\\\)\\$${opsPattern}(?i:${escaped})`,
       name: `${category}.function.fs`,
     }
   })
@@ -123,7 +123,7 @@ export async function updateSyntaxHighlightingMC() {
   }
 }
 
-updateSyntaxHighlightingMC().catch((err) => {
+updateSyntaxHighlighting().catch((err) => {
   console.error("❌ Unexpected error:", err)
   process.exit(1)
 })

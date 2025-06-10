@@ -41,11 +41,12 @@ const updateThemeWatcher_1 = require("./features/theming/updateThemeWatcher");
 const autocomplete_1 = require("./features/autocompletion/autocomplete");
 const hover_1 = require("./features/hover/hover");
 const signature_1 = require("./features/hover/signature");
-const updateThemeMC_1 = require("./features/theming/updateThemeMC");
+const updateTheme_1 = require("./features/theming/updateTheme");
+const typeChecker_1 = require("./features/diagnostics/typeChecker");
 async function activate(context) {
     context.subscriptions.push(vscode.commands.registerCommand('forge-vsc.initConfig', init_1.initForgeConfig));
     context.subscriptions.push(vscode.commands.registerCommand('forge-vsc.reloadSyntaxHighlighting', async () => {
-        (0, updateThemeMC_1.updateSyntaxHighlightingMC)();
+        (0, updateTheme_1.updateSyntaxHighlighting)();
         const choice = await vscode.window.showInformationMessage('Syntax highlighting updated. Reload window for full effect?', 'Reload Now');
         if (choice === 'Reload Now') {
             vscode.commands.executeCommand('workbench.action.reloadWindow');
@@ -69,6 +70,15 @@ async function activate(context) {
         }
     }, '$');
     context.subscriptions.push(autocompleteProvider);
+    const diagnostics = vscode.languages.createDiagnosticCollection("forgescript");
+    context.subscriptions.push(diagnostics);
+    const triggerDiagnostics = (doc) => {
+        if (doc.languageId === "javascript" || doc.languageId === "typescript") {
+            (0, typeChecker_1.runTypeDiagnostics)(doc, diagnostics);
+        }
+    };
+    vscode.workspace.textDocuments.forEach(triggerDiagnostics);
+    context.subscriptions.push(vscode.workspace.onDidChangeTextDocument(e => triggerDiagnostics(e.document)), vscode.workspace.onDidOpenTextDocument(triggerDiagnostics));
     console.log('🎉 Forge VSC Extension is now active!');
 }
 function deactivate() {
