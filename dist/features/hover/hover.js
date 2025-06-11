@@ -71,9 +71,10 @@ function registerHoverProvider(context) {
                 }
                 md.appendMarkdown("\n");
             }
+            const extension = fn.extension || "Unknown";
+            md.appendMarkdown(`**Extension:** ${extension}\n`);
             return new vscode.Hover(md, range);
         }
     });
     context.subscriptions.push(provider);
 }
-console.log();

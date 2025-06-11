@@ -8,14 +8,19 @@ const https_1 = __importDefault(require("https"));
 const getConfig_1 = require("../config/getConfig");
 async function fetchFunctionMetadata() {
     const all = [];
-    const rawUrls = Object.values((0, getConfig_1.getConfig)("urls") || {}).filter((v) => typeof v === "string");
-    const urls = rawUrls
-        .map((entry) => {
-        const match = entry.match(/^([^/#]+)\/([^#]+)#(.+)$/);
+    const urlsConfig = (0, getConfig_1.getConfig)("urls") || {};
+    const urls = Object.entries(urlsConfig)
+        .map(([key, value]) => {
+        if (typeof value !== "string")
+            return null;
+        const match = value.match(/^([^/#]+)\/([^#]+)#(.+)$/);
         if (!match)
             return null;
         const [, user, repo, ref] = match;
-        return `https://raw.githubusercontent.com/${user}/${repo}/${ref}/metadata/functions.json`;
+        return {
+            url: `https://raw.githubusercontent.com/${user}/${repo}/${ref}/metadata/functions.json`,
+            extension: key
+        };
     })
         .filter((v) => !!v);
     const customFuncs = (0, getConfig_1.getConfig)("customFunctions");
@@ -36,7 +41,7 @@ async function fetchFunctionMetadata() {
             }).on("error", (err) => reject(`❌ Error fetching ${url}: ${err}`));
         });
     }
-    for (const url of urls) {
+    for (const { url, extension } of urls) {
         try {
             const fetched = await fetchJson(url);
             for (const fn of fetched) {
@@ -45,6 +50,7 @@ async function fetchFunctionMetadata() {
                     name: fn.name.startsWith("$") ? fn.name : `$${fn.name}`,
                     args: Array.isArray(fn.args) ? fn.args : [],
                     brackets: fn.brackets !== false,
+                    extension
                 };
                 all.push(normalized);
                 if (Array.isArray(fn.aliases)) {
@@ -53,7 +59,7 @@ async function fetchFunctionMetadata() {
                             all.push({
                                 ...normalized,
                                 name: alias.startsWith("$") ? alias : `$${alias}`,
-                                aliases: undefined,
+                                aliases: undefined
                             });
                         }
                     }
@@ -78,17 +84,18 @@ async function fetchFunctionMetadata() {
                 const base = {
                     name,
                     aliases,
-                    description: fn.description || "Custom function",
-                    category: fn.category || "custom",
-                    args: Array.isArray(fn.params) ? fn.params : [],
+                    description: typeof fn.description === "string" ? fn.description : "Custom function",
+                    category: typeof fn.category === "string" ? fn.category : "custom",
+                    args: Array.isArray(fn.args) ? fn.args : [],
                     brackets: fn.brackets !== false,
+                    extension: "custom"
                 };
                 all.push(base);
                 for (const alias of aliases) {
                     all.push({
                         ...base,
                         name: alias.startsWith("$") ? alias : `$${alias}`,
-                        aliases: undefined,
+                        aliases: undefined
                     });
                 }
             }

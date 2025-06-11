@@ -35,30 +35,55 @@ var __importStar = (this && this.__importStar) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getAutocompleteItems = getAutocompleteItems;
 const vscode = __importStar(require("vscode"));
+const getConfig_1 = require("../config/getConfig");
 const functionLoader_1 = require("../utils/functionLoader");
 async function getAutocompleteItems() {
     const items = [];
     const metadata = await (0, functionLoader_1.fetchFunctionMetadata)();
+    const urls = (0, getConfig_1.getConfig)("urls") || {};
+    const extensions = [...Object.keys(urls), "custom"];
+    const iconPool = [
+        vscode.CompletionItemKind.Function,
+        vscode.CompletionItemKind.Interface,
+        vscode.CompletionItemKind.Module,
+        vscode.CompletionItemKind.Class,
+        vscode.CompletionItemKind.Struct,
+        vscode.CompletionItemKind.Constant,
+        vscode.CompletionItemKind.Variable,
+        vscode.CompletionItemKind.Color,
+        vscode.CompletionItemKind.Property,
+        vscode.CompletionItemKind.Field,
+        vscode.CompletionItemKind.Unit,
+        vscode.CompletionItemKind.Method,
+        vscode.CompletionItemKind.Value
+    ];
+    const kindMap = {};
+    for (let i = 0; i < extensions.length; i++) {
+        const ext = extensions[i];
+        kindMap[ext] = iconPool[i % iconPool.length];
+    }
     for (const fn of metadata) {
         if (!fn.name)
             continue;
+        const hasRequiredArg = fn.args?.some(arg => arg.required) ?? false;
         const name = fn.name.startsWith("$") ? fn.name : `$${fn.name}`;
-        let insertText = name;
+        const insertText = hasRequiredArg ? `[${name}` : name;
         const doc = new vscode.MarkdownString(undefined);
         doc.appendMarkdown(`${fn.description || "*No description*"}\n\n`);
         if (Array.isArray(fn.args) && fn.args.length > 0) {
             doc.appendMarkdown(`**Arguments:**\n`);
             fn.args.forEach(arg => {
-                const name = arg.name || "arg";
+                const argName = arg.name || "arg";
                 const type = arg.type || "any";
                 const isRequired = arg.required === true;
-                doc.appendMarkdown(`- \`${name}\` (${type})${isRequired ? " (req)" : ""}\n`);
+                doc.appendMarkdown(`- \`${argName}\` (${type})${isRequired ? " (req)" : ""}\n`);
             });
         }
         if (fn.output?.length) {
             doc.appendMarkdown(`\nReturns: ${fn.output.join(", ")}\n`);
         }
-        const item = new vscode.CompletionItem(name, vscode.CompletionItemKind.Function);
+        const kind = kindMap[fn.extension ?? "custom"] ?? vscode.CompletionItemKind.Value;
+        const item = new vscode.CompletionItem(name, kind);
         item.insertText = insertText;
         item.detail = name;
         item.documentation = doc;
