@@ -5,9 +5,9 @@
 </p>
 
 <p align="center">
-  <a href="https://wakatime.com"><img src="https://wakatime.com/badge/github/Zack-911/ForgeVsc.svg" alt="wakatime"></a>
-  <a href="https://marketplace.visualstudio.com/items?itemName=Zack-911.forgescript-extension"><img src="https://img.shields.io/visual-studio-marketplace/v/Zack-911.forgescript-extension.svg?label=VS%20Code%20Marketplace" alt="Marketplace Version"></a>
-  <a href="https://github.com/zack-911/forgevsc/blob/main/LICENSE"><img src="https://img.shields.io/github/license/zack-911/forgevsc.svg" alt="license"></a>
+  <a href="https://wakatime.com"><img src="https://wakatime.com/badge/github/Zack-911/ForgeVsc.png" alt="wakatime"></a>
+  <a href="https://marketplace.visualstudio.com/items?itemName=Zack-911.forgescript-extension"><img src="https://img.shields.io/visual-studio-marketplace/v/Zack-911.forgescript-extension.png?label=VS%20Code%20Marketplace" alt="Marketplace Version"></a>
+  <a href="https://github.com/zack-911/forgevsc/blob/main/LICENSE.md"><img src="https://img.shields.io/github/license/zack-911/forgevsc.png" alt="license"></a>
 </p>
 
 ---
