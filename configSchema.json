@@ -3,6 +3,14 @@
   "title": "Extension Config Schema",
   "type": "object",
   "properties": {
+    "enabled":{
+      "type": "boolean",
+      "description": "If true the extension will work on this project & vice versa"
+    },
+    "diagnosticsEnabled":{
+      "type": "boolean",
+      "description": "If true the extension diagnostics will work on this project & vice versa"
+    },
     "syntax": {
       "type": "object",
       "description": "Settings for syntax highlighting",
@@ -89,5 +97,5 @@
       }
     }
   },
-  "required": ["syntax", "urls"]
+  "required": ["syntax", "urls", "enabled", "diagnosticsEnabled"]
 }

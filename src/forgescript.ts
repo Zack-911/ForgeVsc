@@ -6,7 +6,8 @@ import { getAutocompleteItems } from './features/autocompletion/autocomplete'
 import { registerHoverProvider } from './features/hover/hover'
 import { registerSignatureHelpProvider } from './features/hover/signature'
 import { updateSyntaxHighlighting } from './features/theming/updateTheme'
-import { runTypeDiagnostics } from './features/diagnostics/typeChecker'
+import { registerArgumentChecker } from './features/diagnostics/argumentChecker'
+// import { runTypeDiagnostics } from './features/diagnostics/typeChecker'
 
 export async function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(
@@ -29,6 +30,7 @@ export async function activate(context: vscode.ExtensionContext) {
   registerSyntaxHighlightWatcher(context)
   registerHoverProvider(context)
   registerSignatureHelpProvider(context)
+  registerArgumentChecker(context)
 
   const autocompleteProvider = vscode.languages.registerCompletionItemProvider(
     [ 
@@ -51,20 +53,20 @@ export async function activate(context: vscode.ExtensionContext) {
 
   context.subscriptions.push(autocompleteProvider)
 
-  const diagnostics = vscode.languages.createDiagnosticCollection("forgescript")
-  context.subscriptions.push(diagnostics)
+  // const diagnostics = vscode.languages.createDiagnosticCollection("forgescript")
+  //  context.subscriptions.push(diagnostics)
 
-  const triggerDiagnostics = (doc: vscode.TextDocument) => {
-    if (doc.languageId === "javascript" || doc.languageId === "typescript") {
-      runTypeDiagnostics(doc, diagnostics)
-    }
-  }
+  // const triggerDiagnostics = (doc: vscode.TextDocument) => {
+  //   if (doc.languageId === "javascript" || doc.languageId === "typescript") {
+  //     runTypeDiagnostics(doc, diagnostics)
+  //   }
+  // }
 
-  vscode.workspace.textDocuments.forEach(triggerDiagnostics)
-  context.subscriptions.push(
-    vscode.workspace.onDidChangeTextDocument(e => triggerDiagnostics(e.document)),
-    vscode.workspace.onDidOpenTextDocument(triggerDiagnostics)
-  )
+  // vscode.workspace.textDocuments.forEach(triggerDiagnostics)
+  // context.subscriptions.push(
+  //   vscode.workspace.onDidChangeTextDocument(e => triggerDiagnostics(e.document)),
+  //   vscode.workspace.onDidOpenTextDocument(triggerDiagnostics)
+  // )
 
   console.log('🎉 Forge VSC Extension is now active!')
 }

@@ -736,374 +736,360 @@
       }
     },
     {
-      "name": "customCategory function color",
-      "scope": "customCategory.function.fs",
-      "settings": {
-        "foreground": "#a87ffb"
-      }
-    },
-    {
       "name": "drawing function color",
       "scope": "drawing.function.fs",
       "settings": {
-        "foreground": "#b895fd"
+        "foreground": "#a87ffb"
       }
     },
     {
       "name": "embed function color",
       "scope": "embed.function.fs",
       "settings": {
-        "foreground": "#92A9FF"
+        "foreground": "#b895fd"
       }
     },
     {
       "name": "emoji function color",
       "scope": "emoji.function.fs",
       "settings": {
-        "foreground": "#85CDF1"
+        "foreground": "#92A9FF"
       }
     },
     {
       "name": "entitlement function color",
       "scope": "entitlement.function.fs",
       "settings": {
-        "foreground": "#708fff"
+        "foreground": "#85CDF1"
       }
     },
     {
       "name": "events function color",
       "scope": "events.function.fs",
       "settings": {
-        "foreground": "#77D5A3"
+        "foreground": "#708fff"
       }
     },
     {
       "name": "file function color",
       "scope": "file.function.fs",
       "settings": {
-        "foreground": "#FFD395"
+        "foreground": "#77D5A3"
       }
     },
     {
       "name": "formatting function color",
       "scope": "formatting.function.fs",
       "settings": {
-        "foreground": "#f7768e"
+        "foreground": "#FFD395"
       }
     },
     {
       "name": "gif function color",
       "scope": "gif.function.fs",
       "settings": {
-        "foreground": "#fc8f8e"
+        "foreground": "#f7768e"
       }
     },
     {
       "name": "global function color",
       "scope": "global.function.fs",
       "settings": {
-        "foreground": "#ffa23e"
+        "foreground": "#fc8f8e"
       }
     },
     {
       "name": "gradient function color",
       "scope": "gradient.function.fs",
       "settings": {
-        "foreground": "#ffc26e"
+        "foreground": "#ffa23e"
       }
     },
     {
       "name": "guild function color",
       "scope": "guild.function.fs",
       "settings": {
-        "foreground": "#BD9CFE"
+        "foreground": "#ffc26e"
       }
     },
     {
       "name": "headers function color",
       "scope": "headers.function.fs",
       "settings": {
-        "foreground": "#c8aaff"
+        "foreground": "#BD9CFE"
       }
     },
     {
       "name": "helper function color",
       "scope": "helper.function.fs",
       "settings": {
-        "foreground": "#9AC1F6"
+        "foreground": "#c8aaff"
       }
     },
     {
       "name": "http function color",
       "scope": "http.function.fs",
       "settings": {
-        "foreground": "#5A8CFF"
+        "foreground": "#9AC1F6"
       }
     },
     {
       "name": "interaction function color",
       "scope": "interaction.function.fs",
       "settings": {
-        "foreground": "#a87ffb"
+        "foreground": "#5A8CFF"
       }
     },
     {
       "name": "invite function color",
       "scope": "invite.function.fs",
       "settings": {
-        "foreground": "#b895fd"
+        "foreground": "#a87ffb"
       }
     },
     {
       "name": "json function color",
       "scope": "json.function.fs",
       "settings": {
-        "foreground": "#92A9FF"
+        "foreground": "#b895fd"
       }
     },
     {
       "name": "limiter function color",
       "scope": "limiter.function.fs",
       "settings": {
-        "foreground": "#85CDF1"
+        "foreground": "#92A9FF"
       }
     },
     {
       "name": "line function color",
       "scope": "line.function.fs",
       "settings": {
-        "foreground": "#708fff"
+        "foreground": "#85CDF1"
       }
     },
     {
       "name": "logging function color",
       "scope": "logging.function.fs",
       "settings": {
-        "foreground": "#77D5A3"
+        "foreground": "#708fff"
       }
     },
     {
       "name": "lookup function color",
       "scope": "lookup.function.fs",
       "settings": {
-        "foreground": "#FFD395"
+        "foreground": "#77D5A3"
       }
     },
     {
       "name": "math function color",
       "scope": "math.function.fs",
       "settings": {
-        "foreground": "#f7768e"
+        "foreground": "#FFD395"
       }
     },
     {
       "name": "member function color",
       "scope": "member.function.fs",
       "settings": {
-        "foreground": "#fc8f8e"
+        "foreground": "#f7768e"
       }
     },
     {
       "name": "mention function color",
       "scope": "mention.function.fs",
       "settings": {
-        "foreground": "#ffa23e"
+        "foreground": "#fc8f8e"
       }
     },
     {
       "name": "message function color",
       "scope": "message.function.fs",
       "settings": {
-        "foreground": "#ffc26e"
+        "foreground": "#ffa23e"
       }
     },
     {
       "name": "messages function color",
       "scope": "messages.function.fs",
       "settings": {
-        "foreground": "#BD9CFE"
+        "foreground": "#ffc26e"
       }
     },
     {
       "name": "neuquant function color",
       "scope": "neuquant.function.fs",
       "settings": {
-        "foreground": "#c8aaff"
+        "foreground": "#BD9CFE"
       }
     },
     {
       "name": "number function color",
       "scope": "number.function.fs",
       "settings": {
-        "foreground": "#9AC1F6"
+        "foreground": "#c8aaff"
       }
     },
     {
       "name": "old function color",
       "scope": "old.function.fs",
       "settings": {
-        "foreground": "#5A8CFF"
+        "foreground": "#9AC1F6"
       }
     },
     {
       "name": "other function color",
       "scope": "other.function.fs",
       "settings": {
-        "foreground": "#a87ffb"
+        "foreground": "#5A8CFF"
       }
     },
     {
       "name": "path function color",
       "scope": "path.function.fs",
       "settings": {
-        "foreground": "#b895fd"
+        "foreground": "#a87ffb"
       }
     },
     {
       "name": "poll function color",
       "scope": "poll.function.fs",
       "settings": {
-        "foreground": "#92A9FF"
+        "foreground": "#b895fd"
       }
     },
     {
       "name": "query function color",
       "scope": "query.function.fs",
       "settings": {
-        "foreground": "#85CDF1"
+        "foreground": "#92A9FF"
       }
     },
     {
       "name": "reaction function color",
       "scope": "reaction.function.fs",
       "settings": {
-        "foreground": "#708fff"
+        "foreground": "#85CDF1"
       }
     },
     {
       "name": "request function color",
       "scope": "request.function.fs",
       "settings": {
-        "foreground": "#77D5A3"
+        "foreground": "#708fff"
       }
     },
     {
       "name": "response function color",
       "scope": "response.function.fs",
       "settings": {
-        "foreground": "#FFD395"
+        "foreground": "#77D5A3"
       }
     },
     {
       "name": "role function color",
       "scope": "role.function.fs",
       "settings": {
-        "foreground": "#f7768e"
+        "foreground": "#FFD395"
       }
     },
     {
       "name": "soundboard function color",
       "scope": "soundboard.function.fs",
       "settings": {
-        "foreground": "#fc8f8e"
-      }
-    },
-    {
-      "name": "specialCategory function color",
-      "scope": "specialCategory.function.fs",
-      "settings": {
-        "foreground": "#ffa23e"
+        "foreground": "#f7768e"
       }
     },
     {
       "name": "state function color",
       "scope": "state.function.fs",
       "settings": {
-        "foreground": "#ffc26e"
+        "foreground": "#fc8f8e"
       }
     },
     {
       "name": "statement function color",
       "scope": "statement.function.fs",
       "settings": {
-        "foreground": "#BD9CFE"
+        "foreground": "#ffa23e"
       }
     },
     {
       "name": "sticker function color",
       "scope": "sticker.function.fs",
       "settings": {
-        "foreground": "#c8aaff"
+        "foreground": "#ffc26e"
       }
     },
     {
       "name": "string function color",
       "scope": "string.function.fs",
       "settings": {
-        "foreground": "#9AC1F6"
+        "foreground": "#BD9CFE"
       }
     },
     {
       "name": "system function color",
       "scope": "system.function.fs",
       "settings": {
-        "foreground": "#5A8CFF"
+        "foreground": "#c8aaff"
       }
     },
     {
       "name": "time function color",
       "scope": "time.function.fs",
       "settings": {
-        "foreground": "#a87ffb"
+        "foreground": "#9AC1F6"
       }
     },
     {
       "name": "transform function color",
       "scope": "transform.function.fs",
       "settings": {
-        "foreground": "#b895fd"
+        "foreground": "#5A8CFF"
       }
     },
     {
       "name": "unsafe function color",
       "scope": "unsafe.function.fs",
       "settings": {
-        "foreground": "#92A9FF"
+        "foreground": "#a87ffb"
       }
     },
     {
       "name": "user function color",
       "scope": "user.function.fs",
       "settings": {
-        "foreground": "#85CDF1"
+        "foreground": "#b895fd"
       }
     },
     {
       "name": "util function color",
       "scope": "util.function.fs",
       "settings": {
-        "foreground": "#708fff"
+        "foreground": "#92A9FF"
       }
     },
     {
       "name": "variable function color",
       "scope": "variable.function.fs",
       "settings": {
-        "foreground": "#77D5A3"
+        "foreground": "#85CDF1"
       }
     },
     {
       "name": "webhook function color",
       "scope": "webhook.function.fs",
       "settings": {
-        "foreground": "#FFD395"
+        "foreground": "#708fff"
       }
     },
     {
       "name": "websocket function color",
       "scope": "websocket.function.fs",
       "settings": {
-        "foreground": "#f7768e"
+        "foreground": "#77D5A3"
       }
     }
   ]

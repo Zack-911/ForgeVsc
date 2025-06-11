@@ -113,7 +113,7 @@ function resolveType(input, metadata) {
 }
 function normalizeType(type) {
     const t = type.toLowerCase();
-    if (["unknown", "null", "undefined", "other"].includes(t))
+    if (["unknown", "null", "undefined", "other", "string"].includes(t))
         return "any";
     return t;
 }

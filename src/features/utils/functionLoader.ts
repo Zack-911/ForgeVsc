@@ -8,7 +8,7 @@ export interface RawFunction {
   description?: string
   category?: string
   output?: string[]
-  args?: {
+  args: {
     name: string
     description?: string
     type?: string
@@ -17,6 +17,7 @@ export interface RawFunction {
   }[]
   example?: string
   documentation?: string
+  brackets?: boolean
 }
 
 export async function fetchFunctionMetadata(): Promise<RawFunction[]> {
@@ -55,13 +56,20 @@ export async function fetchFunctionMetadata(): Promise<RawFunction[]> {
     try {
       const fetched = await fetchJson(url)
       for (const fn of fetched) {
-        all.push(fn)
+        const normalized: RawFunction = {
+          ...fn,
+          name: fn.name.startsWith("$") ? fn.name : `$${fn.name}`,
+          args: Array.isArray(fn.args) ? fn.args : [],
+          brackets: fn.brackets !== false,
+        }
+        all.push(normalized)
+
         if (Array.isArray(fn.aliases)) {
           for (const alias of fn.aliases) {
             if (typeof alias === "string") {
               all.push({
-                ...fn,
-                name: alias,
+                ...normalized,
+                name: alias.startsWith("$") ? alias : `$${alias}`,
                 aliases: undefined,
               })
             }
@@ -90,14 +98,15 @@ export async function fetchFunctionMetadata(): Promise<RawFunction[]> {
           aliases,
           description: fn.description || "Custom function",
           category: fn.category || "custom",
-          args: fn.params || undefined,
+          args: Array.isArray(fn.params) ? fn.params : [],
+          brackets: fn.brackets !== false,
         }
 
         all.push(base)
         for (const alias of aliases) {
           all.push({
             ...base,
-            name: alias,
+            name: alias.startsWith("$") ? alias : `$${alias}`,
             aliases: undefined,
           })
         }

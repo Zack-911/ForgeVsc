@@ -4897,10 +4897,6 @@
               "name": "util.function.fs"
             },
             {
-              "match": "(?<!\\\\)\\$(?:!|#|@\\[[^\\]]*\\])?(?i:mySpecialFunc)",
-              "name": "specialCategory.function.fs"
-            },
-            {
               "match": "(?<!\\\\)\\$(?:!|#|@\\[[^\\]]*\\])?(?i:arrayForEach)",
               "name": "array.function.fs"
             },
@@ -6287,10 +6283,6 @@
             {
               "match": "(?<!\\\\)\\$(?:!|#|@\\[[^\\]]*\\])?(?i:wordSpacing)",
               "name": "util.function.fs"
-            },
-            {
-              "match": "(?<!\\\\)\\$(?:!|#|@\\[[^\\]]*\\])?(?i:customFunc1)",
-              "name": "customCategory.function.fs"
             },
             {
               "match": "(?<!\\\\)\\$(?:!|#|@\\[[^\\]]*\\])?(?i:arrayClear)",
@@ -8621,6 +8613,10 @@
               "name": "util.function.fs"
             },
             {
+              "match": "(?<!\\\\)\\$(?:!|#|@\\[[^\\]]*\\])?(?i:colors)",
+              "name": "embed.function.fs"
+            },
+            {
               "match": "(?<!\\\\)\\$(?:!|#|@\\[[^\\]]*\\])?(?i:botID)",
               "name": "bot.function.fs"
             },
@@ -8767,6 +8763,10 @@
             {
               "match": "(?<!\\\\)\\$(?:!|#|@\\[[^\\]]*\\])?(?i:alpha)",
               "name": "util.function.fs"
+            },
+            {
+              "match": "(?<!\\\\)\\$(?:!|#|@\\[[^\\]]*\\])?(?i:start)",
+              "name": "other.function.fs"
             },
             {
               "match": "(?<!\\\\)\\$(?:!|#|@\\[[^\\]]*\\])?(?i:ping)",

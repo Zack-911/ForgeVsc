@@ -1,4 +1,6 @@
 {
+  "enabled": true,
+  "diagnosticsEnabled": true,
   "syntax": {
     "colors": [
       "#a87ffb",
