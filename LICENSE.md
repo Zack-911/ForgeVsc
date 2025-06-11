@@ -1,21 +1,25 @@
-MIT License
+ForgeVSC Extension License
+Based on GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 
-Copyright (c) 2025 zack-911
+Copyright (C) 2025 Zack-911
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, version 3, with the following additional condition:
 
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
+Additional Attribution Requirement:
+  Any work that uses, modifies, or distributes this software or any portion of it, whether in source or binary form, must prominently give visible credit to the original author(s) in both the source code and user-facing interface (e.g., README, about screen, CLI --version, or documentation).
+  
+  This credit must include:
+  - The name of the original project: "ForgeVSC"
+  - A link to the original repository: https://github.com/zack-911/forgevsc
+  - The names of the original authors, if provided
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
+Failure to provide this credit will constitute a violation of this license.
+
+Otherwise, this program is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program. If not, see <https://www.gnu.org/licenses/>.

@@ -18,20 +18,25 @@ export interface RawFunction {
   example?: string
   documentation?: string
   brackets?: boolean
+  extension?: string
 }
 
 export async function fetchFunctionMetadata(): Promise<RawFunction[]> {
   const all: RawFunction[] = []
 
-  const rawUrls = Object.values(getConfig("urls") || {}).filter((v): v is string => typeof v === "string")
-  const urls = rawUrls
-    .map((entry) => {
-      const match = entry.match(/^([^/#]+)\/([^#]+)#(.+)$/)
+  const urlsConfig = getConfig("urls") || {}
+  const urls = Object.entries(urlsConfig)
+    .map(([key, value]) => {
+      if (typeof value !== "string") return null
+      const match = value.match(/^([^/#]+)\/([^#]+)#(.+)$/)
       if (!match) return null
       const [, user, repo, ref] = match
-      return `https://raw.githubusercontent.com/${user}/${repo}/${ref}/metadata/functions.json`
+      return {
+        url: `https://raw.githubusercontent.com/${user}/${repo}/${ref}/metadata/functions.json`,
+        extension: key
+      }
     })
-    .filter((v): v is string => !!v)
+    .filter((v): v is { url: string; extension: string } => !!v)
 
   const customFuncs = getConfig("customFunctions")
 
@@ -52,7 +57,7 @@ export async function fetchFunctionMetadata(): Promise<RawFunction[]> {
     })
   }
 
-  for (const url of urls) {
+  for (const { url, extension } of urls) {
     try {
       const fetched = await fetchJson(url)
       for (const fn of fetched) {
@@ -61,6 +66,7 @@ export async function fetchFunctionMetadata(): Promise<RawFunction[]> {
           name: fn.name.startsWith("$") ? fn.name : `$${fn.name}`,
           args: Array.isArray(fn.args) ? fn.args : [],
           brackets: fn.brackets !== false,
+          extension
         }
         all.push(normalized)
 
@@ -70,7 +76,7 @@ export async function fetchFunctionMetadata(): Promise<RawFunction[]> {
               all.push({
                 ...normalized,
                 name: alias.startsWith("$") ? alias : `$${alias}`,
-                aliases: undefined,
+                aliases: undefined
               })
             }
           }
@@ -96,18 +102,20 @@ export async function fetchFunctionMetadata(): Promise<RawFunction[]> {
         const base: RawFunction = {
           name,
           aliases,
-          description: fn.description || "Custom function",
-          category: fn.category || "custom",
-          args: Array.isArray(fn.params) ? fn.params : [],
+          description: typeof fn.description === "string" ? fn.description : "Custom function",
+          category: typeof fn.category === "string" ? fn.category : "custom",
+          args: Array.isArray(fn.args) ? fn.args : [],
           brackets: fn.brackets !== false,
+          extension: "custom"
         }
 
         all.push(base)
+
         for (const alias of aliases) {
           all.push({
             ...base,
             name: alias.startsWith("$") ? alias : `$${alias}`,
-            aliases: undefined,
+            aliases: undefined
           })
         }
       }

@@ -30,13 +30,36 @@
   "customFunctions": {
     "Example1": {
       "name": "customFunc1",
-      "params": ["param1", "param2"],
-      "category": "customCategory"
+      "aliases": ["altFunc1", "altFunc2"],
+      "description": "Does custom logic 1",
+      "category": "customCategory",
+      "brackets": true,
+      "args": [
+        {
+          "name": "param1",
+          "required": true,
+          "rest": false
+        },
+        {
+          "name": "param2",
+          "required": false,
+          "rest": false
+        }
+      ]
     },
     "Example2": {
       "name": "mySpecialFunc",
-      "params": ["input"],
-      "category": "specialCategory"
+      "aliases": ["myAlias"],
+      "description": "This one is special",
+      "category": "specialCategory",
+      "brackets": false,
+      "args": [
+        {
+          "name": "input",
+          "required": true,
+          "rest": false
+        }
+      ]
     }
   }
 }

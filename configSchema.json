@@ -3,11 +3,11 @@
   "title": "Extension Config Schema",
   "type": "object",
   "properties": {
-    "enabled":{
+    "enabled": {
       "type": "boolean",
       "description": "If true the extension will work on this project & vice versa"
     },
-    "diagnosticsEnabled":{
+    "diagnosticsEnabled": {
       "type": "boolean",
       "description": "If true the extension diagnostics will work on this project & vice versa"
     },
@@ -83,16 +83,47 @@
             "pattern": "^[^$]+$",
             "description": "Function name must NOT contain the $ sign"
           },
-          "params": {
+          "aliases": {
             "type": "array",
-            "description": "Optional array of parameters"
+            "description": "Alternative function names",
+            "items": {
+              "type": "string"
+            }
+          },
+          "description": {
+            "type": "string",
+            "description": "Description of the function"
           },
           "category": {
             "type": "string",
             "description": "Function category"
+          },
+          "brackets": {
+            "type": "boolean",
+            "description": "Whether the function supports brackets"
+          },
+          "args": {
+            "type": "array",
+            "description": "List of arguments for the function",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "required": {
+                  "type": "boolean"
+                },
+                "rest": {
+                  "type": "boolean"
+                }
+              },
+              "required": ["name", "required", "rest"],
+              "additionalProperties": false
+            }
           }
         },
-        "required": ["name", "category"],
+        "required": ["name", "category", "args"],
         "additionalProperties": false
       }
     }
