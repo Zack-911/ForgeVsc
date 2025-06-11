@@ -67,7 +67,7 @@ async function getAutocompleteItems() {
             continue;
         const hasRequiredArg = fn.args?.some(arg => arg.required) ?? false;
         const name = fn.name.startsWith("$") ? fn.name : `$${fn.name}`;
-        const insertText = hasRequiredArg ? `[${name}` : name;
+        const insertText = hasRequiredArg ? `${name}[` : name;
         const doc = new vscode.MarkdownString(undefined);
         doc.appendMarkdown(`${fn.description || "*No description*"}\n\n`);
         if (Array.isArray(fn.args) && fn.args.length > 0) {
