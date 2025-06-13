@@ -2,12 +2,13 @@ import * as vscode from 'vscode'
 
 import { initForgeConfig } from './features/config/init'
 import { registerSyntaxHighlightWatcher } from './features/theming/updateThemeWatcher'
-import { getAutocompleteItems } from './features/autocompletion/autocomplete'
+import { getAutocompleteFunctionsItems } from './features/autocompletion/autocompleteFunctions'
+import { getAutocompleteEventsItems } from './features/autocompletion/autocompleteEvents'
 import { registerHoverProvider } from './features/hover/hover'
-import { registerSignatureHelpProvider } from './features/hover/signature'
+import { registerSignatureHelpProvider } from './features/intellisense/signature'
 import { updateSyntaxHighlighting } from './features/theming/updateTheme'
 import { registerArgumentChecker } from './features/diagnostics/argumentChecker'
-// import { runTypeDiagnostics } from './features/diagnostics/typeChecker'
+import { registerWebviewCommands } from './features/webviews/registerWebviewCommands'
 
 export async function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(
@@ -31,9 +32,10 @@ export async function activate(context: vscode.ExtensionContext) {
   registerHoverProvider(context)
   registerSignatureHelpProvider(context)
   registerArgumentChecker(context)
+  registerWebviewCommands(context)
 
-  const autocompleteProvider = vscode.languages.registerCompletionItemProvider(
-    [ 
+  const autocompleteFunctionProvider = vscode.languages.registerCompletionItemProvider(
+    [
       { language: 'javascript' },
       { language: 'typescript' }
     ],
@@ -44,29 +46,37 @@ export async function activate(context: vscode.ExtensionContext) {
         if (!match) return undefined
 
         const partial = match[1] || ""
-        const items = await getAutocompleteItems()
+        const items = await getAutocompleteFunctionsItems()
         return items.filter(item => item.label.startsWith(`$${partial}`))
       }
     },
     '$'
   )
+  context.subscriptions.push(autocompleteFunctionProvider)
 
-  context.subscriptions.push(autocompleteProvider)
+  const autocompleteEventProvider = vscode.languages.registerCompletionItemProvider(
+    [
+      { language: 'javascript' },
+      { language: 'typescript' }
+    ],
+    {
+      async provideCompletionItems(document, position) {
+        const line = document.lineAt(position.line).text
+        const prefix = line.substring(0, position.character)
 
-  // const diagnostics = vscode.languages.createDiagnosticCollection("forgescript")
-  //  context.subscriptions.push(diagnostics)
+        const typeMatch = prefix.match(/type\s*:\s*["'`]([\w-]*)$/)
+        const eventsArrayMatch = prefix.match(/events\s*:\s*\[\s*["'`]([\w-]*)$/)
 
-  // const triggerDiagnostics = (doc: vscode.TextDocument) => {
-  //   if (doc.languageId === "javascript" || doc.languageId === "typescript") {
-  //     runTypeDiagnostics(doc, diagnostics)
-  //   }
-  // }
+        if (!typeMatch && !eventsArrayMatch) return undefined
 
-  // vscode.workspace.textDocuments.forEach(triggerDiagnostics)
-  // context.subscriptions.push(
-  //   vscode.workspace.onDidChangeTextDocument(e => triggerDiagnostics(e.document)),
-  //   vscode.workspace.onDidOpenTextDocument(triggerDiagnostics)
-  // )
+        const partial = (typeMatch?.[1] || eventsArrayMatch?.[1] || "").trim()
+        const items = await getAutocompleteEventsItems()
+        return items.filter(item => item.label.startsWith(partial))
+      }
+    },
+    '"', "'", '`'
+  )
+  context.subscriptions.push(autocompleteEventProvider)
 
   console.log('🎉 Forge VSC Extension is now active!')
 }
