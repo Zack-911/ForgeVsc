@@ -102,7 +102,7 @@
             "type": "boolean",
             "description": "Whether the function supports brackets"
           },
-          "args": {
+          "params": {
             "type": "array",
             "description": "List of arguments for the function",
             "items": {
