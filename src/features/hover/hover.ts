@@ -9,18 +9,27 @@ export function registerHoverProvider(context: vscode.ExtensionContext) {
       const range = document.getWordRangeAtPosition(position, /\$[a-zA-Z0-9_]+/)
       if (!range) return
 
-      const word = document.getText(range)
+      const word = document.getText(range).trim()
       if (!word.startsWith("$")) return
 
       const metadata = await fetchFunctionMetadata()
-      const fn = metadata.find(f => `$${f.name}` === word || f.name === word)
-      if (!fn) return
+      const fn = metadata.find(f =>
+        `$${f.name.toLowerCase()}` === word.toLowerCase() ||
+        f.name.toLowerCase() === word.toLowerCase()
+      )
+
+      if (!fn) {
+        const errMd = new vscode.MarkdownString(undefined)
+        errMd.isTrusted = true
+        errMd.appendMarkdown(`❌ Unknown ForgeScript function: \`${word}\``)
+        return new vscode.Hover(errMd, range)
+      }
 
       const md = new vscode.MarkdownString(undefined)
       md.isTrusted = true
 
-      md.appendMarkdown(`**Function Details**\n`)
-      md.appendMarkdown(`\n\`${word}\`\n\n`)
+      md.appendMarkdown(`**Function Details**\n\n`)
+      md.appendMarkdown(`\`${word}\`\n\n`)
 
       if (fn.description) {
         md.appendMarkdown(`${fn.description}\n\n`)
