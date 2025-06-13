@@ -2,7 +2,7 @@
   "name": "forgescript-extension",
   "displayName": "ForgeScript",
   "description": "Provides syntax highlighting for ForgeScript.",
-  "version": "2.3.5",
+  "version": "2.3.6",
   "publisher": "Zack-911",
   "license": "MIT",
   "icon": "./icons/forgescript.webp",
@@ -42,6 +42,11 @@
       {
         "command": "forge.permission",
         "title": "Open Permission Calculator",
+        "category": "ForgeScript"
+      },
+      {
+        "command": "forge.indexGen",
+        "title": "Open Index Generator",
         "category": "ForgeScript"
       }
     ],
