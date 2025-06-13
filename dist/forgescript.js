@@ -38,12 +38,13 @@ exports.deactivate = deactivate;
 const vscode = __importStar(require("vscode"));
 const init_1 = require("./features/config/init");
 const updateThemeWatcher_1 = require("./features/theming/updateThemeWatcher");
-const autocomplete_1 = require("./features/autocompletion/autocomplete");
+const autocompleteFunctions_1 = require("./features/autocompletion/autocompleteFunctions");
+const autocompleteEvents_1 = require("./features/autocompletion/autocompleteEvents");
 const hover_1 = require("./features/hover/hover");
-const signature_1 = require("./features/hover/signature");
+const signature_1 = require("./features/intellisense/signature");
 const updateTheme_1 = require("./features/theming/updateTheme");
 const argumentChecker_1 = require("./features/diagnostics/argumentChecker");
-// import { runTypeDiagnostics } from './features/diagnostics/typeChecker'
+const registerWebviewCommands_1 = require("./features/webviews/registerWebviewCommands");
 async function activate(context) {
     context.subscriptions.push(vscode.commands.registerCommand('forge-vsc.initConfig', init_1.initForgeConfig));
     context.subscriptions.push(vscode.commands.registerCommand('forge-vsc.reloadSyntaxHighlighting', async () => {
@@ -57,7 +58,8 @@ async function activate(context) {
     (0, hover_1.registerHoverProvider)(context);
     (0, signature_1.registerSignatureHelpProvider)(context);
     (0, argumentChecker_1.registerArgumentChecker)(context);
-    const autocompleteProvider = vscode.languages.registerCompletionItemProvider([
+    (0, registerWebviewCommands_1.registerWebviewCommands)(context);
+    const autocompleteFunctionProvider = vscode.languages.registerCompletionItemProvider([
         { language: 'javascript' },
         { language: 'typescript' }
     ], {
@@ -67,23 +69,28 @@ async function activate(context) {
             if (!match)
                 return undefined;
             const partial = match[1] || "";
-            const items = await (0, autocomplete_1.getAutocompleteItems)();
+            const items = await (0, autocompleteFunctions_1.getAutocompleteFunctionsItems)();
             return items.filter(item => item.label.startsWith(`$${partial}`));
         }
     }, '$');
-    context.subscriptions.push(autocompleteProvider);
-    // const diagnostics = vscode.languages.createDiagnosticCollection("forgescript")
-    //  context.subscriptions.push(diagnostics)
-    // const triggerDiagnostics = (doc: vscode.TextDocument) => {
-    //   if (doc.languageId === "javascript" || doc.languageId === "typescript") {
-    //     runTypeDiagnostics(doc, diagnostics)
-    //   }
-    // }
-    // vscode.workspace.textDocuments.forEach(triggerDiagnostics)
-    // context.subscriptions.push(
-    //   vscode.workspace.onDidChangeTextDocument(e => triggerDiagnostics(e.document)),
-    //   vscode.workspace.onDidOpenTextDocument(triggerDiagnostics)
-    // )
+    context.subscriptions.push(autocompleteFunctionProvider);
+    const autocompleteEventProvider = vscode.languages.registerCompletionItemProvider([
+        { language: 'javascript' },
+        { language: 'typescript' }
+    ], {
+        async provideCompletionItems(document, position) {
+            const line = document.lineAt(position.line).text;
+            const prefix = line.substring(0, position.character);
+            const typeMatch = prefix.match(/type\s*:\s*["'`]([\w-]*)$/);
+            const eventsArrayMatch = prefix.match(/events\s*:\s*\[\s*["'`]([\w-]*)$/);
+            if (!typeMatch && !eventsArrayMatch)
+                return undefined;
+            const partial = (typeMatch?.[1] || eventsArrayMatch?.[1] || "").trim();
+            const items = await (0, autocompleteEvents_1.getAutocompleteEventsItems)();
+            return items.filter(item => item.label.startsWith(partial));
+        }
+    }, '"', "'", '`');
+    context.subscriptions.push(autocompleteEventProvider);
     console.log('🎉 Forge VSC Extension is now active!');
 }
 function deactivate() {

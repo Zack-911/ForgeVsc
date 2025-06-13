@@ -111,7 +111,12 @@ function validateFunction(
 }
 
 function findMetadata(name: string) {
-  return allMetadata.find(m => m.name === `$${name}` || m.aliases?.includes(`$${name}`));
+  const lower = name.toLowerCase()
+  return allMetadata.find(
+    m =>
+      m.name.toLowerCase() === `$${lower}` ||
+      m.aliases?.some(alias => alias.toLowerCase() === `$${lower}`)
+  )
 }
 
 export async function registerArgumentChecker(context: vscode.ExtensionContext) {

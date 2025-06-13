@@ -2,18 +2,17 @@
   "name": "forgescript-extension",
   "displayName": "ForgeScript",
   "description": "Provides syntax highlighting for ForgeScript.",
-  "version": "2.3.4",
+  "version": "2.3.5",
   "publisher": "Zack-911",
   "license": "MIT",
   "icon": "./icons/forgescript.webp",
   "repository": "https://github.com/zack-911/forgevsc",
   "engines": {
-    "vscode": "^1.50.0"
+    "vscode": "^1.74.0"
   },
-  "main": "./dist/forgescript.js",
+  "main": "dist/forgescript.js",
   "activationEvents": [
-    "onLanguage:javascript",
-    "onLanguage:typescript"
+    "workspaceContains:.vscode/forgevsc.config.json"
   ],
   "categories": [
     "Programming Languages"
@@ -22,11 +21,28 @@
     "commands": [
       {
         "command": "forge-vsc.initConfig",
-        "title": "ForgeScript: Initialize Extension"
+        "title": "Initialize Extension",
+        "category": "ForgeScript"
       },
       {
         "command": "forge-vsc.reloadSyntaxHighlighting",
-        "title": "ForgeScript: Reload Syntax Highlighting"
+        "title": "Reload Syntax Highlighting",
+        "category": "ForgeScript"
+      },
+      {
+        "command": "forge.docs",
+        "title": "Open Docs",
+        "category": "ForgeScript"
+      },
+      {
+        "command": "forge.slashCommand",
+        "title": "Open Slash Command Generator",
+        "category": "ForgeScript"
+      },
+      {
+        "command": "forge.permission",
+        "title": "Open Permission Calculator",
+        "category": "ForgeScript"
       }
     ],
     "languages": [
@@ -80,7 +96,7 @@
   },
   "devDependencies": {
     "@types/node": "^22.15.21",
-    "@types/vscode": "^1.50.0",
+    "@types/vscode": "^1.100.0",
     "cpx": "^1.5.0",
     "typescript": "^5.8.3",
     "vscode": "^1.1.37"

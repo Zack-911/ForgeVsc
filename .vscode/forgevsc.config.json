@@ -19,7 +19,11 @@
       "#9AC1F6",
       "#5A8CFF"
     ],
-    "operators": ["!", "#", "@[]"]
+    "operators": [
+      "!",
+      "#",
+      "@[]"
+    ]
   },
   "urls": {
     "forgescript": "tryforge/forgescript#dev",
@@ -28,34 +32,15 @@
     "forgecanvas": "tryforge/forgecanvas#dev"
   },
   "customFunctions": {
-    "Example1": {
-      "name": "customFunc1",
-      "aliases": ["altFunc1", "altFunc2"],
-      "description": "Does custom logic 1",
-      "category": "customCategory",
-      "brackets": true,
-      "args": [
-        {
-          "name": "param1",
-          "required": true,
-          "rest": false
-        },
-        {
-          "name": "param2",
-          "required": false,
-          "rest": false
-        }
-      ]
-    },
-    "Example2": {
-      "name": "mySpecialFunc",
-      "aliases": ["myAlias"],
-      "description": "This one is special",
-      "category": "specialCategory",
+    "test": {
+      "name": "test",
+      "aliases": [],
+      "description": "",
+      "category": "",
       "brackets": false,
       "args": [
         {
-          "name": "input",
+          "name": "test",
           "required": true,
           "rest": false
         }

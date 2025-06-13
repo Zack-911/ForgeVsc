@@ -90,7 +90,8 @@ function registerSignatureHelpProvider(context) {
             if (!currentFunc)
                 return;
             const metadata = await (0, functionLoader_1.fetchFunctionMetadata)();
-            const fn = metadata.find(f => `$${f.name}` === currentFunc || f.name === currentFunc);
+            const lowered = currentFunc.toLowerCase();
+            const fn = metadata.find(f => `$${f.name.toLowerCase()}` === lowered || f.name.toLowerCase() === lowered);
             if (!fn || !Array.isArray(fn.args))
                 return;
             const cursorOffset = currentArgs.length;
@@ -106,12 +107,23 @@ function registerSignatureHelpProvider(context) {
                     argIndex = i + 1;
                 }
             }
-            const sigHelp = new vscode.SignatureHelp();
-            const sig = new vscode.SignatureInformation(`${currentFunc}[${fn.args.map(arg => `${arg.name}: ${arg.type || "any"}`).join("; ")}]`, fn.description || "");
+            const signatureLabelLines = fn.args.map(arg => {
+                const name = arg.name || "arg";
+                const type = arg.type || "any";
+                return `  ${name}: ${type}`;
+            });
+            const signatureLabel = `${currentFunc}[\n${signatureLabelLines.join(";\n")}\n]`;
+            const sig = new vscode.SignatureInformation(signatureLabel, new vscode.MarkdownString(fn.description || "*No description*"));
             sig.parameters = fn.args.map(arg => {
-                const desc = `${arg.name}\n${arg.description || "No description"}\n\nType: ${arg.type || "any"}\nRequired: ${arg.required ? "Yes" : "No"}`;
+                const desc = new vscode.MarkdownString();
+                desc.appendMarkdown(`${arg.description?.trim() || "No description provided."}\n\n`);
+                desc.appendMarkdown(`**Type**: \`${arg.type || "any"}\`\n\n`);
+                desc.appendMarkdown(`**Required**: \`${arg.required ? "true" : "false"}\`\n\n`);
+                desc.appendMarkdown(`**Rest**: \`${arg.rest ? "true" : "false"}\``);
+                desc.isTrusted = true;
                 return new vscode.ParameterInformation(`${arg.name}: ${arg.type || "any"}`, desc);
             });
+            const sigHelp = new vscode.SignatureHelp();
             sigHelp.signatures = [sig];
             sigHelp.activeSignature = 0;
             sigHelp.activeParameter = Math.min(argIndex, fn.args.length - 1);

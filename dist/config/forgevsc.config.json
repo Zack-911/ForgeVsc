@@ -28,15 +28,19 @@
     "forgecanvas": "tryforge/forgecanvas#dev"
   },
   "customFunctions": {
-    "Example1": {
-      "name": "customFunc1",
-      "params": ["param1", "param2"],
-      "category": "customCategory"
-    },
-    "Example2": {
-      "name": "mySpecialFunc",
-      "params": ["input"],
-      "category": "specialCategory"
+    "test": {
+      "name": "test",
+      "aliases": [],
+      "description": "",
+      "category": "",
+      "brackets": false,
+      "args": [
+        {
+          "name": "test",
+          "required": true,
+          "rest": false
+        }
+      ]
     }
   }
 }

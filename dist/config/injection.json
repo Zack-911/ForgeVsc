@@ -5,7 +5,7 @@
   "patterns": [
     {
       "begin": "(?<=\\b(code|handler)\\s*:\\s*)`",
-      "end": "`",
+      "end": "(?<!\\\\)`",
       "contentName": "meta.embedded.forgescript",
       "patterns": [
         {

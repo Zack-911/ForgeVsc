@@ -107,7 +107,9 @@ function validateFunction(func, meta, document, blockOffset, diagnostics, blockT
     }
 }
 function findMetadata(name) {
-    return allMetadata.find(m => m.name === `$${name}` || m.aliases?.includes(`$${name}`));
+    const lower = name.toLowerCase();
+    return allMetadata.find(m => m.name.toLowerCase() === `$${lower}` ||
+        m.aliases?.some(alias => alias.toLowerCase() === `$${lower}`));
 }
 async function registerArgumentChecker(context) {
     allMetadata = await (0, functionLoader_1.fetchFunctionMetadata)();

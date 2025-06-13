@@ -39,20 +39,43 @@ export async function getAutocompleteFunctionsItems(): Promise<vscode.Completion
     const insertText = hasRequiredArg ? `${name}[` : name
 
     const doc = new vscode.MarkdownString(undefined)
+    doc.isTrusted = true
+
     doc.appendMarkdown(`${fn.description || "*No description*"}\n\n`)
 
     if (Array.isArray(fn.args) && fn.args.length > 0) {
-      doc.appendMarkdown(`**Arguments:**\n`)
-      fn.args.forEach(arg => {
-        const argName = arg.name || "arg"
-        const type = arg.type || "any"
-        const isRequired = arg.required === true
-        doc.appendMarkdown(`- \`${argName}\` (${type})${isRequired ? " (req)" : ""}\n`)
-      })
-    }
+  doc.appendMarkdown(`**Arguments:**\n\n`)
+
+  const rows = [
+    ["Name","Type", "Required", "Rest"],
+    ["-----","----", "--------", "----"]
+  ]
+
+  for (const arg of fn.args) {
+    const name = arg.name || "arg"
+
+    const type = arg.type || "any"
+    const required = arg.required ? "✅" : "❌"
+    const rest = arg.rest ? "✅" : "❌"
+    rows.push([name, type, required, rest])
+  }
+
+  const colWidths = rows[0].map((_, i) =>
+    Math.max(...rows.map(row => row[i].length))
+  )
+
+  const formatted = rows.map(row =>
+    row.map((cell, i) => cell.padEnd(colWidths[i])).join(" | ")
+  )
+
+  const block = "```txt\n" + formatted.join("\n") + "\n```\n"
+  doc.appendMarkdown(block)
+}
+
 
     if (fn.output?.length) {
-      doc.appendMarkdown(`\nReturns: ${fn.output.join(", ")}\n`)
+      const output = Array.isArray(fn.output) ? fn.output.join(", ") : fn.output
+      doc.appendMarkdown(`**Returns:** ${output}\n`)
     }
 
     const kind = kindMap[fn.extension ?? "custom"] ?? vscode.CompletionItemKind.Value

@@ -18,7 +18,7 @@
 - Define custom token operators, function names, and even add themed styling with full JSON control.
 
 ### ⚡ Autocomplete
-- Get real-time suggestions for ForgeScript and your custom functions as you type.
+- Get real-time suggestions for ForgeScript functions, events and enums and your custom functions as you type.
 
 ### 🧠 Hover Info
 - Hover over a function to see its description, argument details, aliases, bracket behavior, and examples.
@@ -49,7 +49,6 @@
 
 * [ ] Auto index `index.js` or `index.ts` for custom function definitions.
 * [ ] Type checking for arguments and their types (e.g. numbers, booleans, time, etc).
-* [ ] Smart IntelliSense for nested functions and conditionals.
 
 ---
 
@@ -94,34 +93,15 @@ Example:
     "forgecanvas": "tryforge/forgecanvas#dev"
   },
   "customFunctions": {
-    "Example1": {
-      "name": "customFunc1",
-      "aliases": ["altFunc1", "altFunc2"],
-      "description": "Does custom logic 1",
-      "category": "customCategory",
-      "brackets": true,
-      "args": [
-        {
-          "name": "param1",
-          "required": true,
-          "rest": false
-        },
-        {
-          "name": "param2",
-          "required": false,
-          "rest": false
-        }
-      ]
-    },
-    "Example2": {
-      "name": "mySpecialFunc",
-      "aliases": ["myAlias"],
-      "description": "This one is special",
-      "category": "specialCategory",
+    "test": {
+      "name": "test",
+      "aliases": [],
+      "description": "",
+      "category": "",
       "brackets": false,
       "args": [
         {
-          "name": "input",
+          "name": "test",
           "required": true,
           "rest": false
         }
