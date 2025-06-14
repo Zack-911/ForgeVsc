@@ -1,4 +1,5 @@
 {
+  "prettier": true,
   "enabled": true,
   "diagnosticsEnabled": true,
   "syntax": {
@@ -19,7 +20,11 @@
       "#9AC1F6",
       "#5A8CFF"
     ],
-    "operators": ["!", "#", "@[]"]
+    "operators": [
+      "!",
+      "#",
+      "@[]"
+    ]
   },
   "urls": {
     "forgescript": "tryforge/forgescript#dev",
@@ -34,7 +39,7 @@
       "description": "",
       "category": "",
       "brackets": false,
-      "args": [
+      "params": [
         {
           "name": "test",
           "required": true,

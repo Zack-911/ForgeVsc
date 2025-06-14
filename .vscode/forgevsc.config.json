@@ -1,4 +1,5 @@
 {
+  "prettier": true,
   "enabled": true,
   "diagnosticsEnabled": true,
   "syntax": {
@@ -38,7 +39,7 @@
       "description": "",
       "category": "",
       "brackets": false,
-      "args": [
+      "params": [
         {
           "name": "test",
           "required": true,

@@ -1,7 +1,7 @@
 <h1 align="center">ForgeVSC</h1>
 
 <p align="center">
-  Powerful VS Code Extension for <strong>ForgeScript</strong> scripting with rich intellisense, hover info, signature help, and custom diagnostics.
+  Powerful VS Code Extension for <strong>ForgeScript</strong> scripting — with rich intellisense, custom diagnostics, syntax highlighting, and more.
 </p>
 
 <p align="center">
@@ -15,48 +15,53 @@
 ## 🚀 Features
 
 ### ✅ Dynamic Syntax Highlighting
-- Define custom token operators, function names, and even add themed styling with full JSON control.
+- Customize token colors, operator styles, and dynamic syntax rules using full JSON config.
 
-### ⚡ Autocomplete
-- Get real-time suggestions for ForgeScript functions, events and enums and your custom functions as you type.
+### ⚡ Intelligent Autocompletion
+- Suggests ForgeScript functions, events, and your custom functions as you type.
+- Function and event completion providers are modular and optimized for performance.
 
-### 🧠 Hover Info
-- Hover over a function to see its description, argument details, aliases, bracket behavior, and examples.
+### 🧠 Hover Information
+- Hover over a function to see its description, aliases, brackets, arguments, and return types.
 
-### ✍️ Signature Info
-- While your cursor is inside a function's brackets, you'll get:
-  - All required and optional arguments.
-  - Highlight of the current argument you're on.
-  - Argument types, default values, and tips.
+### ✍️ Signature Help
+- Inside function brackets, see current argument details:
+  - Name, required/optional, type hints, rest status, and tips.
 
-### ⚙️ Advanced Config System
-- Customize highlighting, function aliases, operator tokens, function types, categories, and more using:
-`.vscode/forgevsc.config.json`
+### 🛠 Type-Aware Diagnostics
+- Detect missing/invalid arguments or types live as you code.
+- Upcoming full type validation support (booleans, numbers, time formats, etc.)
+
+### 📐 Prettification Support
+- Normalize inconsistent function casing in diagnostics/autocomplete.
+- Ensures your function names match metadata and config.
+
+### ⚙️ Custom Config System
+- One config powers it all: autocompletion, diagnostics, theme rules, aliases, and function metadata.
+- Fully supports per-project configuration with `.vscode/forgevsc.config.json`.
 
 ### 🧩 Custom Function Support
-
-* Define your own ForgeScript-like functions with metadata, and get full:
-
-  * Autocompletion
-  * Hover info
-  * Signature info
-
----
-
-## 🧪 Work In Progress
-
-### 🔜 Upcoming Features
-
-* [ ] Auto index `index.js` or `index.ts` for custom function definitions.
-* [ ] Type checking for arguments and their types (e.g. numbers, booleans, time, etc).
+- Define your own ForgeScript-like functions with full intellisense:
+  - Autocompletion
+  - Hover info
+  - Signature help
+  - Type checking (soon)
 
 ---
 
-## 🛠 Configuration
+## 📦 Work In Progress
 
-Place your config in:
+### 🔜 Upcoming
+- [ ] Auto-index custom function definitions from your `index.ts`
+- [ ] Type checking for argument types (`number`, `boolean`, `time`, etc.)
 
-```
+---
+
+## ⚙️ Configuration
+
+Place this in your project root:
+
+```plaintext
 .vscode/forgevsc.config.json
 ```
 
@@ -64,26 +69,11 @@ Example:
 
 ```json
 {
+  "prettier": true,
   "enabled": true,
   "diagnosticsEnabled": true,
   "syntax": {
-    "colors": [
-      "#a87ffb",
-      "#b895fd",
-      "#92A9FF",
-      "#85CDF1",
-      "#708fff",
-      "#77D5A3",
-      "#FFD395",
-      "#f7768e",
-      "#fc8f8e",
-      "#ffa23e",
-      "#ffc26e",
-      "#BD9CFE",
-      "#c8aaff",
-      "#9AC1F6",
-      "#5A8CFF"
-    ],
+    "colors": ["#a87ffb", "#b895fd", "#92A9FF", "#85CDF1"],
     "operators": ["!", "#", "@[]"]
   },
   "urls": {
@@ -99,7 +89,7 @@ Example:
       "description": "",
       "category": "",
       "brackets": false,
-      "args": [
+      "params": [
         {
           "name": "test",
           "required": true,
@@ -113,27 +103,35 @@ Example:
 
 ---
 
-## 🧩 Custom Function Metadata Format
+## 📘 Custom Function Format
 
-Each custom function can include:
+Each custom function supports:
 
-* `name`, `aliases`, `description`, `brackets`
-* `args[]` array with `name`, `type`, `required`, and `rest`
-* Automatically picked up by autocompletion and type checker
+* `name`: string
+* `aliases`: string\[]
+* `description`: string
+* `brackets`: boolean
+* `params`: array of:
+
+  * `name`: string
+  * `type`: string
+  * `required`: boolean
+  * `rest`: boolean
 
 ---
 
-## 🧠 Why ForgeVSC?
+## 💡 Why ForgeVSC?
 
-ForgeScript is growing fast. ForgeVSC is designed to keep up with it — built from scratch for:
+Built for ForgeScript from the ground up — no generic language servers. It’s:
 
-* Performance
-* Customizability
-* Real-time static analysis
-* Developer happiness
+* Fast, lightweight, and modular
+* Built for creators and bot developers
+* Designed to scale with ForgeScript’s future
 
 ---
 
 ## 📄 License
 
-ForgeVsc Ext License (Modified GPL V3) © [Zack-911](https://github.com/zack-911)
+ForgeVSC Extension License (Modified GPLv3) © [Zack-911](https://github.com/zack-911)
+
+Read full terms in [`LICENSE.md`](https://github.com/zack-911/forgevsc/blob/main/LICENSE.md)
