@@ -33,12 +33,31 @@ var __importStar = (this && this.__importStar) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.registerWebviewCommands = registerWebviewCommands;
+exports.registerFunctionCompletionProvider = registerFunctionCompletionProvider;
 const vscode = __importStar(require("vscode"));
-const openDocs_1 = require("./openDocs");
-const openSlashCommand_1 = require("./openSlashCommand");
-const openPermissionGenerator_1 = require("./openPermissionGenerator");
-const openIndexGen_1 = require("./openIndexGen");
-function registerWebviewCommands(context) {
-    context.subscriptions.push(vscode.commands.registerCommand("forge.docs", openDocs_1.openDocs), vscode.commands.registerCommand("forge.slashCommand", openSlashCommand_1.openSlashCommand), vscode.commands.registerCommand("forge.permission", openPermissionGenerator_1.openPermission), vscode.commands.registerCommand("forge.indexGen", openIndexGen_1.openIndexGen));
+const autocompleteFunctions_1 = require("./autocompleteFunctions");
+function registerFunctionCompletionProvider(context) {
+    const provider = vscode.languages.registerCompletionItemProvider([
+        { language: 'javascript' },
+        { language: 'typescript' }
+    ], {
+        async provideCompletionItems(document, position) {
+            const line = document.lineAt(position).text;
+            let start = position.character - 1;
+            while (start >= 0) {
+                const char = line[start];
+                if (char === '$')
+                    break;
+                if (!/[a-zA-Z0-9_]/.test(char))
+                    return undefined;
+                start--;
+            }
+            if (start < 0 || line[start] !== '$')
+                return undefined;
+            const partial = line.slice(start, position.character);
+            const items = await (0, autocompleteFunctions_1.getAutocompleteFunctionsItems)();
+            return items.filter(item => item.label.startsWith(`$${partial.slice(1)}`));
+        }
+    }, '$');
+    context.subscriptions.push(provider);
 }

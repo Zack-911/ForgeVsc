@@ -1,5 +1,5 @@
 import * as vscode from "vscode"
-import { fetchFunctionMetadata } from "../utils/functionLoader"
+import { fetchFunctionMetadata, RawFunction } from "../utils/functionLoader"
 
 export function registerHoverProvider(context: vscode.ExtensionContext) {
   const supportedLanguages = ["forgescript", "javascript", "typescript"]
@@ -13,10 +13,7 @@ export function registerHoverProvider(context: vscode.ExtensionContext) {
       if (!word.startsWith("$")) return
 
       const metadata = await fetchFunctionMetadata()
-      const fn = metadata.find(f =>
-        `$${f.name.toLowerCase()}` === word.toLowerCase() ||
-        f.name.toLowerCase() === word.toLowerCase()
-      )
+      const fn = findMetadata(word, metadata)
 
       if (!fn) {
         const errMd = new vscode.MarkdownString(undefined)
@@ -28,8 +25,10 @@ export function registerHoverProvider(context: vscode.ExtensionContext) {
       const md = new vscode.MarkdownString(undefined)
       md.isTrusted = true
 
+      const shownName = word !== fn.name ? `\`${word}\` (matched: \`${fn.name}\`)` : `\`${fn.name}\``
+
       md.appendMarkdown(`**Function Details**\n\n`)
-      md.appendMarkdown(`\`${word}\`\n\n`)
+      md.appendMarkdown(`${shownName}\n\n`)
 
       if (fn.description) {
         md.appendMarkdown(`${fn.description}\n\n`)
@@ -59,4 +58,32 @@ export function registerHoverProvider(context: vscode.ExtensionContext) {
   })
 
   context.subscriptions.push(provider)
+}
+
+function findMetadata(name: string, metadata: RawFunction[]) {
+  const lower = name.toLowerCase().replace(/^\$/, "")
+
+  const exact = metadata.find(
+    m =>
+      m.name.toLowerCase() === `$${lower}` ||
+      m.name.toLowerCase() === lower ||
+      m.aliases?.some(alias => alias.toLowerCase().replace(/^\$/, "") === lower)
+  )
+  if (exact) return exact
+
+  const sorted = [...metadata].sort((a, b) => b.name.length - a.name.length)
+
+  for (const m of sorted) {
+    const base = m.name.replace(/^\$/, "").toLowerCase()
+    if (lower.startsWith(base)) return m
+
+    const aliasMatch = m.aliases?.find(alias => {
+      const sliced = alias.startsWith("$") ? alias.slice(1) : alias
+      return lower.startsWith(sliced.toLowerCase())
+    })
+
+    if (aliasMatch) return m
+  }
+
+  return null
 }

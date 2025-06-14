@@ -33,12 +33,15 @@ var __importStar = (this && this.__importStar) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.registerWebviewCommands = registerWebviewCommands;
+exports.openIndexGen = openIndexGen;
 const vscode = __importStar(require("vscode"));
-const openDocs_1 = require("./openDocs");
-const openSlashCommand_1 = require("./openSlashCommand");
-const openPermissionGenerator_1 = require("./openPermissionGenerator");
-const openIndexGen_1 = require("./openIndexGen");
-function registerWebviewCommands(context) {
-    context.subscriptions.push(vscode.commands.registerCommand("forge.docs", openDocs_1.openDocs), vscode.commands.registerCommand("forge.slashCommand", openSlashCommand_1.openSlashCommand), vscode.commands.registerCommand("forge.permission", openPermissionGenerator_1.openPermission), vscode.commands.registerCommand("forge.indexGen", openIndexGen_1.openIndexGen));
+function openIndexGen() {
+    const panel = vscode.window.createWebviewPanel("indexGenerator", "Index Generator", vscode.ViewColumn.One, {
+        enableScripts: true,
+        retainContextWhenHidden: true
+    });
+    panel.webview.html = `
+    <style>body, html { margin: 0; padding: 0; height: 100%; }</style>
+    <iframe src="https://tools.botforge.org/clientgen" style="width:100%;height:100%;border:none;"></iframe>
+  `;
 }

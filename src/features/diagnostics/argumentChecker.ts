@@ -36,7 +36,7 @@ function validateFunction(
   if (argDefs.length === 0 && hasBrackets) {
     diagnostics.push(new vscode.Diagnostic(
       range,
-      `Function $${func.name} cannot have brackets because it takes no arguments.`,
+      `Function ${meta.name} cannot have brackets because it takes no arguments.`,
       vscode.DiagnosticSeverity.Error
     ));
     return;
@@ -45,7 +45,7 @@ function validateFunction(
   if (meta.brackets && argDefs.some(arg => arg.required) && !hasBrackets) {
     diagnostics.push(new vscode.Diagnostic(
       range,
-      `Function $${func.name} requires brackets because it has required arguments.`,
+      `Function ${meta.name} requires brackets because it has required arguments.`,
       vscode.DiagnosticSeverity.Error
     ));
     return;
@@ -65,7 +65,7 @@ function validateFunction(
     if (realArgCount < requiredCount) {
       diagnostics.push(new vscode.Diagnostic(
         range,
-        `Function $${func.name} requires at least ${requiredCount} argument(s), but got ${realArgCount}.`,
+        `Function ${meta.name} requires at least ${requiredCount} argument(s), but got ${realArgCount}.`,
         vscode.DiagnosticSeverity.Error
       ));
     }
@@ -73,7 +73,7 @@ function validateFunction(
     if (realArgCount > maxArgs && !hasRest) {
       diagnostics.push(new vscode.Diagnostic(
         range,
-        `Function $${func.name} received ${realArgCount} argument(s), but only ${maxArgs} expected.`,
+        `Function ${meta.name} received ${realArgCount} argument(s), but only ${maxArgs} expected.`,
         vscode.DiagnosticSeverity.Error
       ));
     }
@@ -98,12 +98,12 @@ function validateFunction(
       if (Array.isArray(arg)) {
         for (const sub of arg) {
           if (typeof sub === "object" && "name" in sub) {
-            const subMeta = allMetadata.find(m => m.name === `$${sub.name}` || m.aliases?.includes(`$${sub.name}`));
+            const subMeta = findMetadata(sub.name);
             if (subMeta) validateFunction(sub, subMeta, document, blockOffset, diagnostics, blockText);
           }
         }
       } else if ("name" in arg) {
-        const subMeta = allMetadata.find(m => m.name === `$${arg.name}` || m.aliases?.includes(`$${arg.name}`));
+        const subMeta = findMetadata(arg.name);
         if (subMeta) validateFunction(arg, subMeta, document, blockOffset, diagnostics, blockText);
       }
     }
@@ -111,12 +111,30 @@ function validateFunction(
 }
 
 function findMetadata(name: string) {
-  const lower = name.toLowerCase()
-  return allMetadata.find(
+  const lower = name.toLowerCase();
+
+  const exact = allMetadata.find(
     m =>
       m.name.toLowerCase() === `$${lower}` ||
       m.aliases?.some(alias => alias.toLowerCase() === `$${lower}`)
-  )
+  );
+  if (exact) return exact;
+
+  const sorted = [...allMetadata].sort((a, b) => b.name.length - a.name.length);
+
+  for (const m of sorted) {
+    const base = m.name.slice(1).toLowerCase();
+    if (lower.startsWith(base)) return m;
+
+    const aliasMatch = m.aliases?.find(alias => {
+      const sliced = alias.startsWith("$") ? alias.slice(1) : alias;
+      return lower.startsWith(sliced.toLowerCase());
+    });
+
+    if (aliasMatch) return m;
+  }
+
+  return null;
 }
 
 export async function registerArgumentChecker(context: vscode.ExtensionContext) {

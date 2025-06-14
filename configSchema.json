@@ -3,6 +3,10 @@
   "title": "Extension Config Schema",
   "type": "object",
   "properties": {
+    "prettier": {
+      "type": "boolean",
+      "description": "Wether to make ur code prettier when u click on save"
+    },
     "enabled": {
       "type": "boolean",
       "description": "If true the extension will work on this project & vice versa"
@@ -123,10 +127,10 @@
             }
           }
         },
-        "required": ["name", "category", "args"],
+        "required": ["name", "category", "description", "brackets", "params"],
         "additionalProperties": false
       }
     }
   },
-  "required": ["syntax", "urls", "enabled", "diagnosticsEnabled"]
+  "required": ["syntax", "urls", "enabled", "diagnosticsEnabled", "customFunctions", "prettier"]
 }

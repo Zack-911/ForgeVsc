@@ -8,6 +8,7 @@ export interface ParsedFunction {
   raw: string
   hasBrackets: boolean
   rangeInBlock: { start: number, end: number }
+  range: { start: number, end: number }
   escaped: boolean
 }
 
@@ -53,9 +54,11 @@ export function parseExpression(input: string): ParsedFunction[] {
     const { silent, negation } = parseModifiers()
     const separator = parseSeparator()
 
+    const nameStart = i
     let name = ''
     while (i < input.length && /[a-zA-Z0-9_]/.test(input[i])) name += input[i++]
     if (name === '') throw new Error(`Expected function name at pos ${i}`)
+    const nameEnd = i
 
     const isEscapedFunction = name === "esc" || name === "escapeCode"
 
@@ -71,6 +74,7 @@ export function parseExpression(input: string): ParsedFunction[] {
         raw,
         hasBrackets: false,
         rangeInBlock: { start: rawStart, end: i },
+        range: { start: nameStart, end: nameEnd },
         escaped
       }
     }
@@ -93,6 +97,7 @@ export function parseExpression(input: string): ParsedFunction[] {
       raw,
       hasBrackets: true,
       rangeInBlock: { start: rawStart, end: rawEnd },
+      range: { start: nameStart, end: nameEnd },
       escaped
     }
   }
@@ -150,25 +155,25 @@ export function parseExpression(input: string): ParsedFunction[] {
   }
 
   const result: ParsedFunction[] = []
-    while (i < input.length) {
-      if (input[i] === '\\' && input[i + 1] === '$') {
+  while (i < input.length) {
+    if (input[i] === '\\' && input[i + 1] === '$') {
+      i++
+    }
+
+    if (input[i] === '$' && input[i + 1] === '{') {
+      i += 2
+      let braceDepth = 1
+      while (i < input.length && braceDepth > 0) {
+        if (input[i] === '{') braceDepth++
+        else if (input[i] === '}') braceDepth--
         i++
       }
-    
-      if (input[i] === '$' && input[i + 1] === '{') {
-        i += 2
-        let braceDepth = 1
-        while (i < input.length && braceDepth > 0) {
-          if (input[i] === '{') braceDepth++
-          else if (input[i] === '}') braceDepth--
-          i++
-        }
-        continue
-      }
-    
-      if (input[i] === '$') result.push(parseFunction())
-      else i++
+      continue
     }
+
+    if (input[i] === '$') result.push(parseFunction())
+    else i++
+  }
   console.log(JSON.stringify(result,undefined,2))
   return result
 }

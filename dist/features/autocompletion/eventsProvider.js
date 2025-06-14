@@ -33,12 +33,25 @@ var __importStar = (this && this.__importStar) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.registerWebviewCommands = registerWebviewCommands;
+exports.registerEventCompletionProvider = registerEventCompletionProvider;
 const vscode = __importStar(require("vscode"));
-const openDocs_1 = require("./openDocs");
-const openSlashCommand_1 = require("./openSlashCommand");
-const openPermissionGenerator_1 = require("./openPermissionGenerator");
-const openIndexGen_1 = require("./openIndexGen");
-function registerWebviewCommands(context) {
-    context.subscriptions.push(vscode.commands.registerCommand("forge.docs", openDocs_1.openDocs), vscode.commands.registerCommand("forge.slashCommand", openSlashCommand_1.openSlashCommand), vscode.commands.registerCommand("forge.permission", openPermissionGenerator_1.openPermission), vscode.commands.registerCommand("forge.indexGen", openIndexGen_1.openIndexGen));
+const autocompleteEvents_1 = require("./autocompleteEvents");
+function registerEventCompletionProvider(context) {
+    const provider = vscode.languages.registerCompletionItemProvider([
+        { language: 'javascript' },
+        { language: 'typescript' }
+    ], {
+        async provideCompletionItems(document, position) {
+            const line = document.lineAt(position.line).text;
+            const prefix = line.substring(0, position.character);
+            const typeMatch = prefix.match(/type\s*:\s*["'`]([\w-]*)$/);
+            const eventsArrayMatch = prefix.match(/events\s*:\s*\[\s*["'`]([\w-]*)$/);
+            if (!typeMatch && !eventsArrayMatch)
+                return undefined;
+            const partial = (typeMatch?.[1] || eventsArrayMatch?.[1] || "").trim();
+            const items = await (0, autocompleteEvents_1.getAutocompleteEventsItems)();
+            return items.filter(item => item.label.startsWith(partial));
+        }
+    }, '"', "'", '`');
+    context.subscriptions.push(provider);
 }

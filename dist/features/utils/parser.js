@@ -45,11 +45,13 @@ function parseExpression(input) {
         i++;
         const { silent, negation } = parseModifiers();
         const separator = parseSeparator();
+        const nameStart = i;
         let name = '';
         while (i < input.length && /[a-zA-Z0-9_]/.test(input[i]))
             name += input[i++];
         if (name === '')
             throw new Error(`Expected function name at pos ${i}`);
+        const nameEnd = i;
         const isEscapedFunction = name === "esc" || name === "escapeCode";
         if (input[i] !== '[') {
             const raw = input.slice(rawStart, i);
@@ -63,6 +65,7 @@ function parseExpression(input) {
                 raw,
                 hasBrackets: false,
                 rangeInBlock: { start: rawStart, end: i },
+                range: { start: nameStart, end: nameEnd },
                 escaped
             };
         }
@@ -83,6 +86,7 @@ function parseExpression(input) {
             raw,
             hasBrackets: true,
             rangeInBlock: { start: rawStart, end: rawEnd },
+            range: { start: nameStart, end: nameEnd },
             escaped
         };
     }

@@ -2,7 +2,7 @@
   "name": "forgescript-extension",
   "displayName": "ForgeScript",
   "description": "Provides syntax highlighting for ForgeScript.",
-  "version": "2.3.6",
+  "version": "2.4.0",
   "publisher": "Zack-911",
   "license": "MIT",
   "icon": "./icons/forgescript.webp",
