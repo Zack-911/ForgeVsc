@@ -1,0 +1,16 @@
+{
+  "ForgeScript HTTP Route Module": {
+    "prefix": "fsapi",
+    "body": [
+      "module.exports = {",
+      "  url: '${1:/path}',",
+      "  method: \"${2:GET}\",",
+      "  auth: ${3:false},",
+      "  handler: `",
+      "    ${4:// handle request here}",
+      "  `",
+      "}"
+    ],
+    "description": "ForgeApi command"
+  }
+}

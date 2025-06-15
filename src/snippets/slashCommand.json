@@ -1,0 +1,17 @@
+{
+  "ForgeScript Data Command": {
+    "prefix": "fsslash",
+    "body": [
+      "module.exports = {",
+      "  code: `",
+      "    ${1:// code here}",
+      "  `,",
+      "  data: {",
+      "    name: \"${2:name}\",",
+      "    description: \"${3:description}\"",
+      "  }",
+      "}"
+    ],
+    "description": "ForgeScript slash command template"
+  }
+}

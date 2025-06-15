@@ -9,7 +9,6 @@ import { registerWebviewCommands } from './features/webviews/registerWebviewComm
 import { registerFunctionNameNormalizer } from './features/prettier/normalizeFunctionNames'
 import { registerFunctionCompletionProvider } from './features/autocompletion/functionsProvider'
 import { registerEventCompletionProvider } from './features/autocompletion/eventsProvider'
-
 export async function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(
     vscode.commands.registerCommand('forge-vsc.initConfig', initForgeConfig)
@@ -27,7 +26,6 @@ export async function activate(context: vscode.ExtensionContext) {
       }
     })
   )
-
   registerSyntaxHighlightWatcher(context)
   registerHoverProvider(context)
   registerSignatureHelpProvider(context)

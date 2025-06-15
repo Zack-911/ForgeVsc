@@ -1,0 +1,15 @@
+{
+  "ForgeScript Auth Function Module": {
+    "prefix": "fscustom",
+    "body": [
+      "module.exports = {",
+      "  name: \"${1:apiKeyAuth}\",",
+      "  params: [${2}],",
+      "  code: `",
+      "    ${3:// auth logic here}",
+      "  `",
+      "}"
+    ],
+    "description": "ForgeScript custom function"
+  }
+}

@@ -170,6 +170,5 @@ function parseExpression(input) {
         else
             i++;
     }
-    console.log(JSON.stringify(result, undefined, 2));
     return result;
 }

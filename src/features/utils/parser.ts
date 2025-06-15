@@ -174,6 +174,5 @@ export function parseExpression(input: string): ParsedFunction[] {
     if (input[i] === '$') result.push(parseFunction())
     else i++
   }
-  console.log(JSON.stringify(result,undefined,2))
   return result
 }

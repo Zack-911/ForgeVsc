@@ -97,6 +97,24 @@
         ],
         "url": "./configSchema.json"
       }
+    ],
+    "snippets": [
+      {
+        "language": "fs",
+        "path": "./snippets/apiCommand.json"
+      },
+      {
+        "language": "fs",
+        "path": "./snippets/customFunction.json"
+      },
+      {
+        "language": "fs",
+        "path": "./snippets/prefixCommand.json"
+      },
+      {
+        "language": "fs",
+        "path": "./snippets/slashCommand.json"
+      }
     ]
   },
   "devDependencies": {
